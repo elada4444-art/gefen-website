@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>גפן סוכנויות לביטוח ופיננסים | מרכז תכנון וליווי פיננסי</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1c2a4a;
+    --navy-deep: #121d36;
+    --orange: #f07d1a;
+    --orange-soft: #ffa14e;
+    --cream: #f7f4ee;
+    --whatsapp: #25d366;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+    touch-action: none;
+    background: var(--navy-deep);
+    font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
+    color: var(--cream);
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* ===== Canvases ===== */
+  #bgCanvas, #fgCanvas {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+  }
+  #bgCanvas {
+    filter: blur(42px) brightness(0.55) saturate(1.1);
+    transform: scale(1.15);
+  }
+
+  /* ===== Loader ===== */
+  #loader {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: radial-gradient(ellipse at 50% 40%, #24345c 0%, var(--navy-deep) 70%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 26px;
+    transition: opacity 0.8s ease, visibility 0.8s;
+  }
+  #loader.hidden { opacity: 0; visibility: hidden; }
+  .loader-logo {
+    font-size: clamp(34px, 6vw, 58px);
+    font-weight: 900;
+    letter-spacing: 0.02em;
+  }
+  .loader-logo span { color: var(--orange); }
+  .loader-sub {
+    font-size: clamp(15px, 2.4vw, 20px);
+    font-weight: 300;
+    opacity: 0.85;
+    letter-spacing: 0.14em;
+  }
+  .loader-bar {
+    width: min(320px, 70vw);
+    height: 3px;
+    background: rgba(247,244,238,0.15);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .loader-bar i {
+    display: block;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--orange), var(--orange-soft));
+    border-radius: 99px;
+    transition: width 0.25s ease;
+  }
+  .loader-pct { font-size: 13px; opacity: 0.6; font-weight: 300; letter-spacing: 0.1em; }
+
+  /* ===== Top brand bar ===== */
+  #brandBar {
+    position: fixed;
+    top: 0; right: 0; left: 0;
+    z-index: 40;
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(180deg, rgba(10,16,32,0.55) 0%, transparent 100%);
+    pointer-events: none;
+  }
+  .brand-name {
+    font-weight: 800;
+    font-size: clamp(17px, 2.6vw, 23px);
+    text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  }
+  .brand-name b { color: var(--orange); font-weight: 900; }
+  .brand-tag {
+    margin-right: 14px;
+    padding-right: 14px;
+    border-right: 1px solid rgba(247,244,238,0.35);
+    font-weight: 300;
+    font-size: clamp(11px, 1.8vw, 14px);
+    opacity: 0.9;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  }
+  @media (max-width: 560px) { .brand-tag { display: none; } }
+
+  /* ===== Hero overlay (chapter 1) ===== */
+  #heroOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 12vh;
+    background: linear-gradient(180deg, transparent 40%, rgba(12,19,38,0.72) 100%);
+    transition: opacity 0.7s ease, visibility 0.7s;
+    pointer-events: none;
+    text-align: center;
+  }
+  #heroOverlay.hidden { opacity: 0; visibility: hidden; }
+  .hero-title {
+    font-size: clamp(30px, 5.6vw, 62px);
+    font-weight: 900;
+    line-height: 1.15;
+    text-shadow: 0 4px 26px rgba(0,0,0,0.65);
+    animation: riseIn 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  .hero-title em {
+    font-style: normal;
+    color: var(--orange-soft);
+  }
+  .hero-sub {
+    margin-top: 14px;
+    font-size: clamp(15px, 2.3vw, 21px);
+    font-weight: 300;
+    opacity: 0.95;
+    text-shadow: 0 2px 14px rgba(0,0,0,0.6);
+    animation: riseIn 1.1s 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  @keyframes riseIn {
+    from { opacity: 0; transform: translateY(26px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== Scroll hint ===== */
+  #scrollHint {
+    position: fixed;
+    bottom: 26px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 31;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    transition: opacity 0.6s ease, visibility 0.6s;
+    pointer-events: none;
+  }
+  #scrollHint.hidden { opacity: 0; visibility: hidden; }
+  .hint-text {
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    opacity: 0.9;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+  }
+  .mouse {
+    width: 24px; height: 38px;
+    border: 2px solid rgba(247,244,238,0.85);
+    border-radius: 14px;
+    position: relative;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+  }
+  .mouse::after {
+    content: '';
+    position: absolute;
+    top: 7px; left: 50%;
+    width: 3px; height: 7px;
+    margin-left: -1.5px;
+    border-radius: 3px;
+    background: var(--orange);
+    animation: wheelDrop 1.6s ease-in-out infinite;
+  }
+  @keyframes wheelDrop {
+    0%   { transform: translateY(0); opacity: 1; }
+    70%  { transform: translateY(12px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 0; }
+  }
+
+  /* ===== Progress rail ===== */
+  #rail {
+    position: fixed;
+    top: 50%;
+    right: 18px;
+    transform: translateY(-50%);
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: center;
+  }
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: rgba(247,244,238,0.35);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 0 1px 6px rgba(0,0,0,0.45);
+  }
+  .dot:hover { background: rgba(247,244,238,0.75); transform: scale(1.25); }
+  .dot.active {
+    background: var(--orange);
+    height: 26px;
+    border-radius: 6px;
+    box-shadow: 0 0 14px rgba(240,125,26,0.7);
+  }
+  @media (max-width: 560px) { #rail { right: 10px; gap: 11px; } .dot { width: 8px; height: 8px; } }
+
+  /* ===== Floating contact bubbles ===== */
+  #contactStack {
+    position: fixed;
+    bottom: 22px;
+    left: 20px;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .bubble {
+    position: relative;
+    width: 58px; height: 58px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    box-shadow: 0 8px 26px rgba(0,0,0,0.42);
+    animation: bob 3.4s ease-in-out infinite;
+    transition: transform 0.25s ease;
+  }
+  .bubble:hover { transform: scale(1.12); }
+  .bubble svg { width: 27px; height: 27px; fill: #fff; }
+  .bubble::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    animation: ripple 2.4s ease-out infinite;
+  }
+  .bubble.phone { background: linear-gradient(135deg, var(--orange), #d96a0a); }
+  .bubble.phone::before { box-shadow: 0 0 0 0 rgba(240,125,26,0.55); }
+  .bubble.wa { background: linear-gradient(135deg, #2fe375, #1cab52); animation-delay: 0.9s; }
+  .bubble.wa::before { box-shadow: 0 0 0 0 rgba(37,211,102,0.55); animation-delay: 0.6s; }
+  @keyframes bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-7px); }
+  }
+  .bubble:hover { animation-play-state: paused; }
+  @keyframes ripple {
+    0%   { box-shadow: 0 0 0 0 rgba(255,255,255,0.45); }
+    100% { box-shadow: 0 0 0 18px rgba(255,255,255,0); }
+  }
+  .bubble .tip {
+    position: absolute;
+    right: calc(100% + 12px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(12,19,38,0.9);
+    color: var(--cream);
+    font-size: 13px;
+    font-weight: 400;
+    padding: 6px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    direction: rtl;
+  }
+  .bubble:hover .tip { opacity: 1; }
+  @media (hover: none) { .bubble .tip { display: none; } }
+
+  /* ===== Escorts floating button (chapters 2-6) ===== */
+  #escortsBtn {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    z-index: 45;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: clamp(14px, 2.2vw, 17px);
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, rgba(28,42,74,0.92), rgba(18,29,54,0.92));
+    border: 1px solid rgba(240,125,26,0.75);
+    padding: 14px 30px;
+    border-radius: 99px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.45), 0 0 18px rgba(240,125,26,0.25);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.5s;
+    animation: none;
+  }
+  #escortsBtn.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+    animation: glowPulse 2.6s ease-in-out infinite;
+  }
+  #escortsBtn:hover {
+    background: linear-gradient(135deg, var(--orange), #d96a0a);
+    border-color: var(--orange-soft);
+  }
+  @keyframes glowPulse {
+    0%, 100% { box-shadow: 0 10px 30px rgba(0,0,0,0.45), 0 0 14px rgba(240,125,26,0.2); }
+    50%      { box-shadow: 0 10px 30px rgba(0,0,0,0.45), 0 0 30px rgba(240,125,26,0.55); }
+  }
+
+  /* ===== End overlay (chapter 7) ===== */
+  #endOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 32;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding-bottom: 11vh;
+    gap: 22px;
+    background: linear-gradient(180deg, transparent 45%, rgba(12,19,38,0.78) 100%);
+    transition: opacity 0.7s ease, visibility 0.7s;
+    pointer-events: none;
+    text-align: center;
+  }
+  #endOverlay.hidden { opacity: 0; visibility: hidden; }
+  #endOverlay > * { pointer-events: auto; }
+  .end-title {
+    font-size: clamp(24px, 4.4vw, 44px);
+    font-weight: 900;
+    text-shadow: 0 4px 22px rgba(0,0,0,0.65);
+    pointer-events: none;
+  }
+  .end-title em { font-style: normal; color: var(--orange-soft); }
+  .end-actions { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+  .end-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: inherit;
+    font-size: clamp(14px, 2.2vw, 17px);
+    font-weight: 600;
+    color: #fff;
+    text-decoration: none;
+    padding: 13px 26px;
+    border-radius: 99px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+  }
+  .end-btn:hover { transform: translateY(-3px); }
+  .end-btn svg { width: 19px; height: 19px; fill: #fff; }
+  .end-btn.call { background: linear-gradient(135deg, var(--orange), #d96a0a); }
+  .end-btn.wa { background: linear-gradient(135deg, #2fe375, #1cab52); }
+  .end-btn.replay {
+    background: rgba(247,244,238,0.14);
+    border: 1px solid rgba(247,244,238,0.4);
+    backdrop-filter: blur(6px);
+    font-weight: 400;
+  }
+
+  /* ===== Escorts modal (placeholder) ===== */
+  #escortsModal {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(8,13,26,0.66);
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, visibility 0.35s;
+  }
+  #escortsModal.open { opacity: 1; visibility: visible; }
+  .modal-card {
+    width: min(440px, 88vw);
+    background: linear-gradient(160deg, #26365e, var(--navy-deep));
+    border: 1px solid rgba(240,125,26,0.4);
+    border-radius: 22px;
+    padding: 38px 32px 32px;
+    text-align: center;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.55);
+    transform: translateY(22px) scale(0.97);
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    position: relative;
+  }
+  #escortsModal.open .modal-card { transform: translateY(0) scale(1); }
+  .modal-close {
+    position: absolute;
+    top: 14px; left: 16px;
+    background: none;
+    border: none;
+    color: rgba(247,244,238,0.6);
+    font-size: 26px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px;
+  }
+  .modal-close:hover { color: var(--cream); }
+  .modal-card h3 { font-size: 24px; font-weight: 800; margin-bottom: 10px; }
+  .modal-card h3 span { color: var(--orange); }
+  .modal-card p { font-weight: 300; font-size: 15px; line-height: 1.7; opacity: 0.9; }
+
+  /* ===== Mini loading spinner (when a chapter isn't ready yet) ===== */
+  #miniLoader {
+    position: fixed;
+    bottom: 30px;
+    right: 60px;
+    z-index: 60;
+    width: 26px; height: 26px;
+    border: 3px solid rgba(247,244,238,0.2);
+    border-top-color: var(--orange);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  #miniLoader.show { opacity: 1; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+<canvas id="fgCanvas"></canvas>
+
+<!-- Loader -->
+<div id="loader">
+  <div class="loader-logo">גפן <span>סוכנויות לביטוח ופיננסים</span></div>
+  <div class="loader-sub">מרכז תכנון וליווי פיננסי</div>
+  <div class="loader-bar"><i id="loaderFill"></i></div>
+  <div class="loader-pct" id="loaderPct">0%</div>
+</div>
+
+<!-- Brand bar -->
+<header id="brandBar">
+  <div class="brand-name">גפן <b>סוכנויות לביטוח ופיננסים</b></div>
+  <div class="brand-tag">מרכז תכנון וליווי פיננסי</div>
+</header>
+
+<!-- Hero overlay -->
+<div id="heroOverlay">
+  <div class="hero-title">ליווי פיננסי <em>בכל צומת</em> בחיים</div>
+  <div class="hero-sub">מהצעד הראשון ועד הפרישה — אנחנו איתכם בכל החלטה חשובה</div>
+</div>
+
+<!-- Scroll hint -->
+<div id="scrollHint">
+  <div class="mouse"></div>
+  <div class="hint-text">גללו למסע</div>
+</div>
+
+<!-- Progress rail -->
+<nav id="rail" aria-label="פרקי המסע"></nav>
+
+<!-- Floating contact bubbles -->
+<div id="contactStack">
+  <a class="bubble wa" href="https://wa.me/97235727277?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A7%D7%91%D7%9C%20%D7%9C%D7%99%D7%95%D7%95%D7%99%20%D7%A4%D7%99%D7%A0%D7%A0%D7%A1%D7%99"
+     target="_blank" rel="noopener" aria-label="שליחת הודעת WhatsApp">
+    <span class="tip">דברו איתנו ב-WhatsApp</span>
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.297-.497.1-.198.05-.371-.025-.52-.074-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+  <a class="bubble phone" href="tel:+97235727277" aria-label="חיוג מיידי">
+    <span class="tip">חייגו: 03-5727277</span>
+    <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+  </a>
+</div>
+
+<!-- Escorts button (chapters 2-6) -->
+<button id="escortsBtn">לחץ לראות את המלווים הרלוונטיים</button>
+
+<!-- End overlay -->
+<div id="endOverlay" class="hidden">
+  <div class="end-title">נעים להכיר. <em>עכשיו תורכם</em></div>
+  <div class="end-actions">
+    <a class="end-btn call" href="tel:+97235727277">
+      <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+      לתיאום שיחה
+    </a>
+    <a class="end-btn wa" href="https://wa.me/97235727277?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A7%D7%91%D7%9C%20%D7%9C%D7%99%D7%95%D7%95%D7%99%20%D7%A4%D7%99%D7%A0%D7%A0%D7%A1%D7%99" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.297-.497.1-.198.05-.371-.025-.52-.074-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      שלחו הודעה
+    </a>
+    <button class="end-btn replay" id="replayBtn">▶&nbsp; לצפייה מחדש</button>
+  </div>
+</div>
+
+<!-- Escorts modal (placeholder for now) -->
+<div id="escortsModal">
+  <div class="modal-card">
+    <button class="modal-close" id="modalClose" aria-label="סגירה">&times;</button>
+    <h3>המלווים <span>שלנו</span></h3>
+    <p>כאן יופיעו המלווים הרלוונטיים לצומת הפיננסית שבה אתם נמצאים.<br>החלק הזה בבנייה — ממשיכים לבנות אותו יחד.</p>
+  </div>
+</div>
+
+<div id="miniLoader"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- Configuration ---------- */
+  var FPS = 24;
+  var FRAMES = 121;
+  var CHAPTERS = 7;              // 1 = hero image, 2..7 = videos
+  var FIRST_VIDEO = 2;
+  var ESCORT_MIN = 2, ESCORT_MAX = 6;
+
+  function framePath(ch, i) {
+    var s = ('000' + i).slice(-4);
+    return 'assets/frames/' + ch + '/f_' + s + '.webp';
+  }
+
+  /* ---------- State ---------- */
+  var current = 1;               // displayed chapter
+  var animating = false;
+  var lastGesture = 0;
+  var wheelAccum = 0;
+  var chapters = {};             // ch -> { imgs: [], loaded, total, promise }
+  var heroImg = new Image();
+  var currentDrawn = null;       // last drawn image (for resize redraw)
+
+  /* ---------- DOM ---------- */
+  var bg = document.getElementById('bgCanvas');
+  var fg = document.getElementById('fgCanvas');
+  var bgx = bg.getContext('2d');
+  var fgx = fg.getContext('2d');
+  var loader = document.getElementById('loader');
+  var loaderFill = document.getElementById('loaderFill');
+  var loaderPct = document.getElementById('loaderPct');
+  var heroOverlay = document.getElementById('heroOverlay');
+  var scrollHint = document.getElementById('scrollHint');
+  var endOverlay = document.getElementById('endOverlay');
+  var escortsBtn = document.getElementById('escortsBtn');
+  var escortsModal = document.getElementById('escortsModal');
+  var miniLoader = document.getElementById('miniLoader');
+  var rail = document.getElementById('rail');
+
+  /* ---------- Canvas sizing ---------- */
+  var DPR = Math.min(window.devicePixelRatio || 1, 2);
+  function resize() {
+    var w = window.innerWidth, h = window.innerHeight;
+    fg.width = Math.round(w * DPR);
+    fg.height = Math.round(h * DPR);
+    bg.width = 160;
+    bg.height = Math.round(160 * h / w) || 90;
+    if (currentDrawn) draw(currentDrawn);
+  }
+  window.addEventListener('resize', resize);
+
+  /* ---------- Drawing: blurred cover behind, contain in front ---------- */
+  function draw(img) {
+    if (!img || !img.naturalWidth) return;
+    currentDrawn = img;
+    var cw = fg.width, chh = fg.height;
+    var iw = img.naturalWidth, ih = img.naturalHeight;
+
+    // background: cover into the small canvas (CSS blur handles the rest)
+    var bw = bg.width, bh = bg.height;
+    var cs = Math.max(bw / iw, bh / ih);
+    var cwi = iw * cs, chi = ih * cs;
+    bgx.drawImage(img, (bw - cwi) / 2, (bh - chi) / 2, cwi, chi);
+
+    // foreground: contain, centered
+    var s = Math.min(cw / iw, chh / ih);
+    var dw = iw * s, dh = ih * s;
+    fgx.clearRect(0, 0, cw, chh);
+    fgx.drawImage(img, (cw - dw) / 2, (chh - dh) / 2, dw, dh);
+  }
+
+  /* ---------- Preloading ---------- */
+  var initialTotal = FRAMES + 1;   // hero + chapter 2
+  var initialLoaded = 0;
+  function bumpInitial() {
+    initialLoaded++;
+    var pct = Math.min(100, Math.round(initialLoaded / initialTotal * 100));
+    loaderFill.style.width = pct + '%';
+    loaderPct.textContent = pct + '%';
+  }
+
+  function loadChapter(ch, trackInitial) {
+    if (chapters[ch]) return chapters[ch].promise;
+    var entry = { imgs: new Array(FRAMES), loaded: 0 };
+    chapters[ch] = entry;
+    entry.promise = new Promise(function (resolve) {
+      var done = 0;
+      for (var i = 1; i <= FRAMES; i++) {
+        (function (i) {
+          var im = new Image();
+          im.onload = im.onerror = function () {
+            done++;
+            entry.loaded = done;
+            if (trackInitial) bumpInitial();
+            if (done === FRAMES) resolve(entry);
+          };
+          im.src = framePath(ch, i);
+          entry.imgs[i - 1] = im;
+        })(i);
+      }
+    });
+    return entry.promise;
+  }
+
+  function preloadRest() {
+    var seq = [3, 4, 5, 6, 7];
+    (function next() {
+      var ch = seq.shift();
+      if (!ch) return;
+      loadChapter(ch, false).then(next);
+    })();
+  }
+
+  /* ---------- Playback ---------- */
+  // rAF with a setTimeout fallback, for environments where rAF is throttled or stalled
+  function nextTick(fn) {
+    var fired = false, raf, to;
+    function run() {
+      if (fired) return;
+      fired = true;
+      if (raf) cancelAnimationFrame(raf);
+      clearTimeout(to);
+      fn(performance.now());
+    }
+    raf = requestAnimationFrame(run);
+    to = setTimeout(run, 42);
+  }
+
+  function playChapter(ch, reverse) {
+    return new Promise(function (resolve) {
+      var entry = chapters[ch];
+      var t0 = null;
+      var lastIdx = -1;
+      function tick(ts) {
+        if (t0 === null) t0 = ts;
+        var idx = Math.floor((ts - t0) / 1000 * FPS);
+        if (idx >= FRAMES) idx = FRAMES - 1;
+        var fi = reverse ? (FRAMES - 1 - idx) : idx;
+        if (fi !== lastIdx) {
+          lastIdx = fi;
+          draw(entry.imgs[fi]);
+        }
+        if (idx < FRAMES - 1) nextTick(tick);
+        else resolve();
+      }
+      nextTick(tick);
+    });
+  }
+
+  function updateUI() {
+    // hero overlay + hint
+    heroOverlay.classList.toggle('hidden', current !== 1 || animating);
+    scrollHint.classList.toggle('hidden', animating || current === CHAPTERS);
+    // escorts button
+    var show = !animating && current >= ESCORT_MIN && current <= ESCORT_MAX;
+    escortsBtn.classList.toggle('show', show);
+    // end overlay
+    endOverlay.classList.toggle('hidden', !(current === CHAPTERS && !animating));
+    // rail
+    var dots = rail.children;
+    for (var i = 0; i < dots.length; i++) {
+      dots[i].classList.toggle('active', (i + 1) === current);
+    }
+  }
+
+  function ensureLoaded(ch) {
+    var entry = chapters[ch];
+    if (entry && entry.loaded === FRAMES) return Promise.resolve();
+    miniLoader.classList.add('show');
+    return loadChapter(ch, false).then(function () {
+      miniLoader.classList.remove('show');
+    });
+  }
+
+  function goNext() {
+    if (animating || current >= CHAPTERS) return;
+    var target = current + 1;
+    animating = true;
+    updateUI();
+    ensureLoaded(target).then(function () {
+      return playChapter(target, false);
+    }).then(function () {
+      current = target;
+      animating = false;
+      lastGesture = performance.now();
+      updateUI();
+    });
+  }
+
+  function goPrev() {
+    if (animating || current <= 1) return;
+    var played = current;           // reverse-play the chapter we're resting on
+    animating = true;
+    updateUI();
+    playChapter(played, true).then(function () {
+      current = played - 1;
+      if (current === 1) draw(heroImg);
+      else draw(chapters[current].imgs[FRAMES - 1]);
+      animating = false;
+      lastGesture = performance.now();
+      updateUI();
+    });
+  }
+
+  function jumpTo(ch) {
+    if (animating || ch === current) return;
+    if (ch === 1) {
+      current = 1;
+      draw(heroImg);
+      updateUI();
+      return;
+    }
+    animating = true;
+    updateUI();
+    ensureLoaded(ch).then(function () {
+      // arrive by playing that chapter (film feel), regardless of distance
+      return playChapter(ch, false);
+    }).then(function () {
+      current = ch;
+      animating = false;
+      updateUI();
+    });
+  }
+
+  /* ---------- Input ---------- */
+  var COOLDOWN = 450;
+  function gesture(dir) {
+    var now = performance.now();
+    if (animating || now - lastGesture < COOLDOWN) return;
+    lastGesture = now;
+    if (dir > 0) goNext(); else goPrev();
+  }
+
+  window.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    if (animating) { wheelAccum = 0; return; }
+    wheelAccum += e.deltaY;
+    if (Math.abs(wheelAccum) > 40) {
+      var dir = wheelAccum > 0 ? 1 : -1;
+      wheelAccum = 0;
+      gesture(dir);
+    }
+  }, { passive: false });
+
+  var touchY = null;
+  window.addEventListener('touchstart', function (e) {
+    if (e.touches.length === 1) touchY = e.touches[0].clientY;
+  }, { passive: true });
+  window.addEventListener('touchmove', function (e) { e.preventDefault(); }, { passive: false });
+  window.addEventListener('touchend', function (e) {
+    if (touchY === null) return;
+    var dy = touchY - e.changedTouches[0].clientY;
+    touchY = null;
+    if (Math.abs(dy) > 45) gesture(dy > 0 ? 1 : -1);
+  });
+
+  window.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); gesture(1); }
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); gesture(-1); }
+    if (e.key === 'Escape') escortsModal.classList.remove('open');
+  });
+
+  /* ---------- Rail ---------- */
+  for (var i = 1; i <= CHAPTERS; i++) {
+    (function (i) {
+      var d = document.createElement('button');
+      d.className = 'dot';
+      d.setAttribute('aria-label', 'פרק ' + i);
+      d.addEventListener('click', function () { jumpTo(i); });
+      rail.appendChild(d);
+    })(i);
+  }
+
+  /* ---------- Escorts modal ---------- */
+  escortsBtn.addEventListener('click', function () {
+    escortsModal.classList.add('open');
+  });
+  document.getElementById('modalClose').addEventListener('click', function () {
+    escortsModal.classList.remove('open');
+  });
+  escortsModal.addEventListener('click', function (e) {
+    if (e.target === escortsModal) escortsModal.classList.remove('open');
+  });
+
+  /* ---------- Replay ---------- */
+  document.getElementById('replayBtn').addEventListener('click', function () {
+    if (animating) return;
+    current = 1;
+    draw(heroImg);
+    updateUI();
+  });
+
+  /* ---------- Boot ---------- */
+  resize();
+  var heroReady = new Promise(function (resolve) {
+    heroImg.onload = function () { bumpInitial(); resolve(); };
+    heroImg.onerror = resolve;
+    heroImg.src = '1.png';
+  });
+
+  Promise.all([heroReady, loadChapter(FIRST_VIDEO, true)]).then(function () {
+    draw(heroImg);
+    updateUI();
+    setTimeout(function () { loader.classList.add('hidden'); }, 350);
+    preloadRest();
+  });
+})();
+</script>
+</body>
+</html>

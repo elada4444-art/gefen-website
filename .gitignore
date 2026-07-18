@@ -1,0 +1,12 @@
+# System / editor junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local tooling
+.claude/
+node_modules/
+
+# Source videos are kept locally as the master; the site serves assets/frames instead.
+# Comment the next line out if you want the raw MP4s in the repo too.
+*.mp4
