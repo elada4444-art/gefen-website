@@ -535,9 +535,13 @@
   var FIRST_VIDEO = 2;
   var ESCORT_MIN = 2, ESCORT_MAX = 6;
 
+  // Frames + hero are served from a CDN (jsDelivr, backed by the GitHub repo)
+  // so the Vercel deployment stays tiny. Set to '' to load from the same origin.
+  var ASSET_BASE = 'https://cdn.jsdelivr.net/gh/elada4444-art/gefen-website@main/';
+
   function framePath(ch, i) {
     var s = ('000' + i).slice(-4);
-    return 'assets/frames/' + ch + '/f_' + s + '.webp';
+    return ASSET_BASE + 'assets/frames/' + ch + '/f_' + s + '.webp';
   }
 
   /* ---------- State ---------- */
@@ -823,7 +827,7 @@
   var heroReady = new Promise(function (resolve) {
     heroImg.onload = function () { bumpInitial(); resolve(); };
     heroImg.onerror = resolve;
-    heroImg.src = '1.png';
+    heroImg.src = ASSET_BASE + '1.png';
   });
 
   Promise.all([heroReady, loadChapter(FIRST_VIDEO, true)]).then(function () {
