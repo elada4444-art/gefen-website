@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>גפן סוכנויות לביטוח ופיננסים | מרכז תכנון וליווי פיננסי</title>
 <meta name="description" content="ליווי פיננסי בכל צומת בחיים — פנסיה ותכנון פרישה, ניהול החיסכון השוטף, ביטוח בריאות וחיים, רכב, רכוש ומשכנתא. גפן סוכנויות לביטוח ופיננסים.">
-<meta name="theme-color" content="#121d36">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23121d36'/%3E%3Ctext x='50' y='74' font-size='64' font-family='Arial,sans-serif' font-weight='bold' text-anchor='middle' fill='%23f07d1a'%3E%D7%92%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#e9f1fb">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23f4f8fd'/%3E%3Ctext x='50' y='74' font-size='64' font-family='Arial,sans-serif' font-weight='bold' text-anchor='middle' fill='%23e07b16'%3E%D7%92%3C/text%3E%3C/svg%3E">
 
 <!-- Open Graph / share cards (WhatsApp, Facebook, LinkedIn) -->
 <meta property="og:type" content="website">
@@ -43,12 +43,24 @@
 
 <style>
   :root {
-    --navy: #1c2a4a;
-    --navy-deep: #121d36;
-    --orange: #f07d1a;
-    --orange-soft: #ffa14e;
-    --cream: #f7f4ee;
-    --whatsapp: #25d366;
+    /* --- light glass palette --- */
+    --ink: #16244a;             /* primary text: deep navy */
+    --ink-2: #3d5177;           /* secondary text */
+    --sky-1: #f7fbff;
+    --sky-2: #dbe9f9;
+    --sky-3: #c7dcf2;
+    --orange: #e07b16;          /* brand orange */
+    --orange-ink: #b45f0a;      /* orange for text on light (readable) */
+    --orange-btn: linear-gradient(135deg, #e8801a, #c2650c);
+    --wa-btn: linear-gradient(135deg, #22c55e, #15803d);
+
+    --glass: rgba(255,255,255,0.58);
+    --glass-strong: rgba(255,255,255,0.78);
+    --glass-brd: rgba(255,255,255,0.85);
+    --glass-ring: rgba(120,160,210,0.28);
+    --glass-shadow: 0 14px 44px rgba(30,58,110,0.16);
+    --glass-inset: inset 0 1px 0 rgba(255,255,255,0.95);
+
     --safe-b: env(safe-area-inset-bottom, 0px);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -57,9 +69,9 @@
     overflow: hidden;
     overscroll-behavior: none;
     touch-action: none;
-    background: var(--navy-deep);
+    background: var(--sky-2);
     font-family: 'Heebo', 'Segoe UI', Arial, sans-serif;
-    color: var(--cream);
+    color: var(--ink);
     user-select: none;
     -webkit-user-select: none;
     -webkit-tap-highlight-color: transparent;
@@ -75,18 +87,39 @@
   @supports (height: 100dvh) {
     #bgCanvas, #fgCanvas { height: 100dvh; }
   }
+  /* blurred frame behind — brightened and desaturated into a soft light haze */
   #bgCanvas {
-    filter: blur(42px) brightness(0.55) saturate(1.1);
+    filter: blur(46px) brightness(1.28) saturate(0.7) contrast(0.82);
     transform: scale(1.15);
   }
+  /* airy white/blue wash that sits between the haze and the sharp frame */
+  #wash {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(165deg,
+        rgba(255,255,255,0.80) 0%,
+        rgba(219,233,249,0.66) 45%,
+        rgba(255,255,255,0.78) 100%);
+  }
 
-  /* ===== Cinematic vignette ===== */
+  /* ===== Soft light vignette (keeps the glassy, airy edge) ===== */
   #vignette {
     position: fixed;
     inset: 0;
     z-index: 5;
     pointer-events: none;
-    background: radial-gradient(ellipse at center, transparent 55%, rgba(8,12,24,0.34) 100%);
+    background: radial-gradient(ellipse at center, transparent 52%, rgba(233,243,254,0.55) 100%);
+  }
+
+  /* ===== Shared glass surface ===== */
+  .glass {
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    backdrop-filter: blur(18px) saturate(1.4);
+    border: 1px solid var(--glass-brd);
+    box-shadow: var(--glass-shadow), var(--glass-inset), 0 0 0 1px var(--glass-ring);
   }
 
   /* ===== Film progress bar ===== */
@@ -95,17 +128,17 @@
     top: 0; right: 0; left: 0;
     height: 3px;
     z-index: 46;
-    background: rgba(247,244,238,0.08);
+    background: rgba(22,36,74,0.10);
     pointer-events: none;
   }
   #filmProgress i {
     display: block;
     height: 100%;
-    background: linear-gradient(270deg, var(--orange), var(--orange-soft));
+    background: linear-gradient(270deg, var(--orange), #f6a752);
     transform-origin: right;
     transform: scaleX(0);
     transition: transform 0.15s linear;
-    box-shadow: 0 0 8px rgba(240,125,26,0.6);
+    box-shadow: 0 0 8px rgba(224,123,22,0.55);
   }
 
   /* ===== Loader ===== */
@@ -113,31 +146,34 @@
     position: fixed;
     inset: 0;
     z-index: 100;
-    background: radial-gradient(ellipse at 50% 40%, #24345c 0%, var(--navy-deep) 70%);
+    background: radial-gradient(ellipse at 50% 38%, #ffffff 0%, var(--sky-2) 62%, var(--sky-3) 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 26px;
     transition: opacity 0.8s ease, visibility 0.8s;
+    text-align: center;
+    padding: 0 18px;
   }
   #loader.hidden { opacity: 0; visibility: hidden; }
   .loader-logo {
-    font-size: clamp(34px, 6vw, 58px);
+    font-size: clamp(30px, 5.6vw, 56px);
     font-weight: 900;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
+    color: var(--ink);
   }
-  .loader-logo span { color: var(--orange); }
+  .loader-logo span { color: var(--orange-ink); }
   .loader-sub {
-    font-size: clamp(15px, 2.4vw, 20px);
+    font-size: clamp(14px, 2.4vw, 20px);
     font-weight: 300;
-    opacity: 0.85;
+    color: var(--ink-2);
     letter-spacing: 0.14em;
   }
   .loader-bar {
     width: min(320px, 70vw);
     height: 3px;
-    background: rgba(247,244,238,0.15);
+    background: rgba(22,36,74,0.13);
     border-radius: 99px;
     overflow: hidden;
   }
@@ -145,41 +181,50 @@
     display: block;
     height: 100%;
     width: 0%;
-    background: linear-gradient(90deg, var(--orange), var(--orange-soft));
+    background: linear-gradient(90deg, var(--orange), #f6a752);
     border-radius: 99px;
     transition: width 0.25s ease;
   }
-  .loader-pct { font-size: 13px; opacity: 0.6; font-weight: 300; letter-spacing: 0.1em; }
+  .loader-pct { font-size: 13px; color: var(--ink-2); opacity: 0.75; font-weight: 300; letter-spacing: 0.1em; }
 
-  /* ===== Top brand bar ===== */
+  /* ===== Top brand chip ===== */
   #brandBar {
     position: fixed;
-    top: 3px; right: 0; left: 0;
+    top: 14px; right: 18px;
     z-index: 40;
-    padding: 20px 28px;
+    pointer-events: none;
+  }
+  .brand-chip {
     display: flex;
     align-items: center;
-    background: linear-gradient(180deg, rgba(10,16,32,0.55) 0%, transparent 100%);
-    pointer-events: none;
+    gap: 12px;
+    padding: 9px 18px;
+    border-radius: 99px;
+    background: var(--glass-strong);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    backdrop-filter: blur(18px) saturate(1.4);
+    border: 1px solid var(--glass-brd);
+    box-shadow: var(--glass-shadow), var(--glass-inset);
   }
   .brand-name {
     font-weight: 800;
-    font-size: clamp(17px, 2.6vw, 23px);
-    text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+    font-size: clamp(15px, 2.4vw, 20px);
+    color: var(--ink);
+    white-space: nowrap;
   }
-  .brand-name b { color: var(--orange); font-weight: 900; }
+  .brand-name b { color: var(--orange-ink); font-weight: 900; }
   .brand-tag {
-    margin-right: 14px;
-    padding-right: 14px;
-    border-right: 1px solid rgba(247,244,238,0.35);
-    font-weight: 300;
-    font-size: clamp(11px, 1.8vw, 14px);
-    opacity: 0.9;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    padding-right: 12px;
+    border-right: 1px solid rgba(22,36,74,0.18);
+    font-weight: 400;
+    font-size: 13px;
+    color: var(--ink-2);
+    white-space: nowrap;
   }
-  @media (max-width: 560px) {
+  @media (max-width: 620px) {
     .brand-tag { display: none; }
-    #brandBar { padding: 14px 18px; }
+    #brandBar { top: 10px; right: 12px; }
+    .brand-chip { padding: 7px 14px; }
   }
 
   /* ===== Hero overlay (chapter 1) ===== */
@@ -191,37 +236,45 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
-    padding-bottom: calc(13vh + var(--safe-b));
-    background: linear-gradient(180deg, transparent 40%, rgba(12,19,38,0.72) 100%);
+    padding: 0 16px calc(14vh + var(--safe-b));
+    background: linear-gradient(180deg, transparent 42%, rgba(238,246,255,0.55) 78%, rgba(238,246,255,0.8) 100%);
     transition: opacity 0.7s ease, visibility 0.7s;
     pointer-events: none;
     text-align: center;
-    padding-left: 16px;
-    padding-right: 16px;
   }
   #heroOverlay.hidden { opacity: 0; visibility: hidden; }
-  .hero-title {
-    font-size: clamp(30px, 5.6vw, 62px);
-    font-weight: 900;
-    line-height: 1.15;
-    text-shadow: 0 4px 26px rgba(0,0,0,0.65);
+  .hero-card {
+    padding: 26px 40px 28px;
+    border-radius: 26px;
+    max-width: min(760px, 92vw);
     animation: riseIn 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  .hero-title {
+    font-size: clamp(27px, 5.2vw, 56px);
+    font-weight: 900;
+    line-height: 1.16;
+    color: var(--ink);
   }
   .hero-title em {
     font-style: normal;
-    color: var(--orange-soft);
+    color: var(--orange-ink);
   }
   .hero-sub {
-    margin-top: 14px;
-    font-size: clamp(15px, 2.3vw, 21px);
-    font-weight: 300;
-    opacity: 0.95;
-    text-shadow: 0 2px 14px rgba(0,0,0,0.6);
-    animation: riseIn 1.1s 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    margin-top: 12px;
+    font-size: clamp(14px, 2.2vw, 20px);
+    font-weight: 400;
+    color: var(--ink-2);
   }
   @keyframes riseIn {
     from { opacity: 0; transform: translateY(26px); }
     to   { opacity: 1; transform: translateY(0); }
+  }
+  /* narrow screens: lift the hero card clear of the floating contact bubbles */
+  @media (max-width: 900px) {
+    #heroOverlay { padding-bottom: calc(192px + var(--safe-b)); }
+  }
+  @media (max-width: 560px) {
+    .hero-card { padding: 20px 22px 22px; border-radius: 22px; }
   }
 
   /* ===== Scroll hint (chapter 1 only) ===== */
@@ -241,17 +294,17 @@
   #scrollHint.hidden { opacity: 0; visibility: hidden; }
   .hint-text {
     font-size: 13px;
-    font-weight: 400;
-    letter-spacing: 0.16em;
-    opacity: 0.9;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--ink-2);
+    text-shadow: 0 1px 3px rgba(255,255,255,0.9);
   }
   .mouse {
     width: 24px; height: 38px;
-    border: 2px solid rgba(247,244,238,0.85);
+    border: 2px solid rgba(22,36,74,0.55);
     border-radius: 14px;
     position: relative;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    background: rgba(255,255,255,0.35);
   }
   .mouse::after {
     content: '';
@@ -271,8 +324,8 @@
   .chev {
     display: none;
     width: 14px; height: 14px;
-    border-top: 3px solid rgba(247,244,238,0.9);
-    border-right: 3px solid rgba(247,244,238,0.9);
+    border-top: 3px solid rgba(22,36,74,0.6);
+    border-right: 3px solid rgba(22,36,74,0.6);
     transform: rotate(-45deg);
     border-radius: 2px;
     animation: chevFloat 1.5s ease-in-out infinite;
@@ -280,7 +333,7 @@
   #scrollHint.touch .mouse { display: none; }
   #scrollHint.touch .chev { display: block; }
   @keyframes chevFloat {
-    0%, 100% { transform: rotate(-45deg) translate(0, 0); opacity: 0.5; }
+    0%, 100% { transform: rotate(-45deg) translate(0, 0); opacity: 0.45; }
     50%      { transform: rotate(-45deg) translate(5px, -5px); opacity: 1; }
   }
 
@@ -295,38 +348,47 @@
     flex-direction: column;
     gap: 14px;
     align-items: center;
+    padding: 12px 7px;
+    border-radius: 99px;
+    background: rgba(255,255,255,0.45);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+    backdrop-filter: blur(14px) saturate(1.3);
+    border: 1px solid rgba(255,255,255,0.8);
+    box-shadow: 0 8px 26px rgba(30,58,110,0.13);
   }
   .dot {
     position: relative;
     width: 10px; height: 10px;
     border-radius: 50%;
-    background: rgba(247,244,238,0.35);
+    background: rgba(22,36,74,0.26);
     border: none;
     cursor: pointer;
     padding: 0;
     transition: background 0.35s, height 0.35s, border-radius 0.35s, box-shadow 0.35s;
-    box-shadow: 0 1px 6px rgba(0,0,0,0.45);
   }
-  .dot:hover { background: rgba(247,244,238,0.75); }
+  .dot:hover { background: rgba(22,36,74,0.55); }
   .dot.active {
     background: var(--orange);
     height: 26px;
     border-radius: 6px;
-    box-shadow: 0 0 14px rgba(240,125,26,0.7);
+    box-shadow: 0 0 12px rgba(224,123,22,0.55);
   }
   @media (hover: hover) {
     .dot::after {
       content: attr(data-label);
       position: absolute;
       top: 50%;
-      right: 22px;
+      right: 24px;
       transform: translateY(-50%);
-      background: rgba(12,19,38,0.92);
-      border: 1px solid rgba(240,125,26,0.35);
-      color: var(--cream);
+      background: rgba(255,255,255,0.9);
+      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,0.9);
+      box-shadow: 0 6px 20px rgba(30,58,110,0.16);
+      color: var(--ink);
       font-family: 'Heebo', sans-serif;
       font-size: 12.5px;
-      font-weight: 400;
+      font-weight: 600;
       padding: 5px 12px;
       border-radius: 8px;
       white-space: nowrap;
@@ -337,7 +399,10 @@
     }
     .dot:hover::after { opacity: 1; }
   }
-  @media (max-width: 560px) { #rail { right: 10px; gap: 11px; } .dot { width: 8px; height: 8px; } }
+  @media (max-width: 560px) {
+    #rail { right: 8px; gap: 11px; padding: 10px 6px; }
+    .dot { width: 8px; height: 8px; }
+  }
 
   /* ===== Floating contact bubbles ===== */
   #contactStack {
@@ -358,7 +423,7 @@
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    box-shadow: 0 8px 26px rgba(0,0,0,0.42);
+    box-shadow: 0 10px 26px rgba(30,58,110,0.26);
     animation: bob 3.4s ease-in-out infinite;
     transition: transform 0.25s ease;
   }
@@ -371,16 +436,15 @@
     border-radius: 50%;
     animation: ripple 2.4s ease-out infinite;
   }
-  .bubble.phone { background: linear-gradient(135deg, var(--orange), #d96a0a); }
-  .bubble.phone::before { box-shadow: 0 0 0 0 rgba(240,125,26,0.55); }
-  .bubble.wa { background: linear-gradient(135deg, #2fe375, #1cab52); animation-delay: 0.9s; }
-  .bubble.wa::before { box-shadow: 0 0 0 0 rgba(37,211,102,0.55); animation-delay: 0.6s; }
+  .bubble.phone { background: var(--orange-btn); }
+  .bubble.wa { background: var(--wa-btn); animation-delay: 0.9s; }
+  .bubble.wa::before { animation-delay: 0.6s; }
   @keyframes bob {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-7px); }
   }
   @keyframes ripple {
-    0%   { box-shadow: 0 0 0 0 rgba(255,255,255,0.45); }
+    0%   { box-shadow: 0 0 0 0 rgba(255,255,255,0.75); }
     100% { box-shadow: 0 0 0 18px rgba(255,255,255,0); }
   }
   .bubble .tip {
@@ -388,10 +452,14 @@
     right: calc(100% + 12px);
     top: 50%;
     transform: translateY(-50%);
-    background: rgba(12,19,38,0.9);
-    color: var(--cream);
+    background: rgba(255,255,255,0.92);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255,255,255,0.9);
+    box-shadow: 0 6px 20px rgba(30,58,110,0.16);
+    color: var(--ink);
     font-size: 13px;
-    font-weight: 400;
+    font-weight: 600;
     padding: 6px 12px;
     border-radius: 8px;
     white-space: nowrap;
@@ -402,11 +470,12 @@
   }
   .bubble:hover .tip { opacity: 1; }
   @media (hover: none) { .bubble .tip { display: none; } }
+  /* at the finale the end card carries its own call/WhatsApp buttons —
+     retire the floating pair so the CTAs never duplicate or collide */
+  body.at-end #contactStack { opacity: 0; pointer-events: none; }
   @media (max-width: 560px) {
     .bubble { width: 52px; height: 52px; }
     .bubble svg { width: 24px; height: 24px; }
-    /* at the finale the end-overlay has its own big buttons — clear the stage */
-    body.at-end #contactStack { opacity: 0; pointer-events: none; }
   }
 
   /* ===== Escorts floating button (chapters 2-6) ===== */
@@ -416,21 +485,22 @@
     left: 50%;
     transform: translateX(-50%) translateY(80px);
     z-index: 45;
-    border: none;
     cursor: pointer;
     font-family: inherit;
     font-size: clamp(14px, 2.2vw, 17px);
-    font-weight: 600;
-    color: #fff;
-    background: linear-gradient(135deg, rgba(28,42,74,0.92), rgba(18,29,54,0.92));
-    border: 1px solid rgba(240,125,26,0.75);
+    font-weight: 700;
+    color: var(--ink);
+    background: var(--glass-strong);
+    -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    backdrop-filter: blur(18px) saturate(1.4);
+    border: 1.5px solid rgba(224,123,22,0.65);
     padding: 14px 30px;
     border-radius: 99px;
-    backdrop-filter: blur(8px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.45), 0 0 18px rgba(240,125,26,0.25);
+    box-shadow: 0 12px 32px rgba(30,58,110,0.2), var(--glass-inset);
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.5s;
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
+                visibility 0.5s, background 0.3s ease, color 0.3s ease;
   }
   #escortsBtn.show {
     opacity: 1;
@@ -439,15 +509,15 @@
     animation: glowPulse 2.6s ease-in-out infinite;
   }
   #escortsBtn:hover {
-    background: linear-gradient(135deg, var(--orange), #d96a0a);
-    border-color: var(--orange-soft);
+    background: var(--orange-btn);
+    color: #fff;
+    border-color: rgba(255,255,255,0.6);
   }
   @keyframes glowPulse {
-    0%, 100% { box-shadow: 0 10px 30px rgba(0,0,0,0.45), 0 0 14px rgba(240,125,26,0.2); }
-    50%      { box-shadow: 0 10px 30px rgba(0,0,0,0.45), 0 0 30px rgba(240,125,26,0.55); }
+    0%, 100% { box-shadow: 0 12px 32px rgba(30,58,110,0.2), 0 0 12px rgba(224,123,22,0.18); }
+    50%      { box-shadow: 0 12px 32px rgba(30,58,110,0.2), 0 0 26px rgba(224,123,22,0.5); }
   }
   @media (max-width: 560px) {
-    /* keep clear of the contact bubbles in the corner */
     #escortsBtn { bottom: calc(96px + var(--safe-b)); padding: 12px 24px; }
   }
 
@@ -460,53 +530,62 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
-    padding-bottom: calc(11vh + var(--safe-b));
-    gap: 22px;
-    background: linear-gradient(180deg, transparent 45%, rgba(12,19,38,0.78) 100%);
+    padding: 0 16px calc(11vh + var(--safe-b));
+    background: linear-gradient(180deg, transparent 45%, rgba(238,246,255,0.6) 80%, rgba(238,246,255,0.85) 100%);
     transition: opacity 0.7s ease, visibility 0.7s;
     pointer-events: none;
     text-align: center;
-    padding-left: 16px;
-    padding-right: 16px;
   }
   #endOverlay.hidden { opacity: 0; visibility: hidden; }
-  #endOverlay > * { pointer-events: auto; }
-  .end-title {
-    font-size: clamp(24px, 4.4vw, 44px);
-    font-weight: 900;
-    text-shadow: 0 4px 22px rgba(0,0,0,0.65);
-    pointer-events: none;
+  .end-card {
+    pointer-events: auto;
+    padding: 26px 34px 28px;
+    border-radius: 26px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    max-width: min(720px, 94vw);
   }
-  .end-title em { font-style: normal; color: var(--orange-soft); }
-  .end-actions { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+  .end-title {
+    font-size: clamp(22px, 4.2vw, 40px);
+    font-weight: 900;
+    color: var(--ink);
+  }
+  .end-title em { font-style: normal; color: var(--orange-ink); }
+  .end-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
   .end-btn {
     display: inline-flex;
     align-items: center;
     gap: 10px;
     font-family: inherit;
     font-size: clamp(14px, 2.2vw, 17px);
-    font-weight: 600;
+    font-weight: 700;
     color: #fff;
     text-decoration: none;
     padding: 13px 26px;
     border-radius: 99px;
     border: none;
     cursor: pointer;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    box-shadow: 0 10px 26px rgba(30,58,110,0.22);
     transition: transform 0.22s ease, box-shadow 0.22s ease;
   }
   .end-btn:hover { transform: translateY(-3px); }
-  .end-btn svg { width: 19px; height: 19px; fill: #fff; }
-  .end-btn.call { background: linear-gradient(135deg, var(--orange), #d96a0a); }
-  .end-btn.wa { background: linear-gradient(135deg, #2fe375, #1cab52); }
+  .end-btn svg { width: 19px; height: 19px; fill: currentColor; }
+  .end-btn.call { background: var(--orange-btn); }
+  .end-btn.wa { background: var(--wa-btn); }
   .end-btn.replay {
-    background: rgba(247,244,238,0.14);
-    border: 1px solid rgba(247,244,238,0.4);
-    backdrop-filter: blur(6px);
-    font-weight: 400;
+    background: rgba(255,255,255,0.75);
+    color: var(--ink);
+    border: 1px solid rgba(22,36,74,0.18);
+    font-weight: 600;
+    box-shadow: 0 8px 22px rgba(30,58,110,0.14);
+  }
+  @media (max-width: 560px) {
+    .end-card { padding: 22px 20px 24px; border-radius: 22px; gap: 16px; }
   }
 
-  /* ===== Escorts modal (placeholder) ===== */
+  /* ===== Escorts modal ===== */
   #escortsModal {
     position: fixed;
     inset: 0;
@@ -514,8 +593,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(8,13,26,0.66);
-    backdrop-filter: blur(6px);
+    background: rgba(226,238,252,0.55);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.35s ease, visibility 0.35s;
@@ -523,12 +603,14 @@
   #escortsModal.open { opacity: 1; visibility: visible; }
   .modal-card {
     width: min(440px, 88vw);
-    background: linear-gradient(160deg, #26365e, var(--navy-deep));
-    border: 1px solid rgba(240,125,26,0.4);
-    border-radius: 22px;
+    background: rgba(255,255,255,0.86);
+    -webkit-backdrop-filter: blur(22px) saturate(1.5);
+    backdrop-filter: blur(22px) saturate(1.5);
+    border: 1px solid rgba(255,255,255,0.95);
+    border-radius: 24px;
     padding: 38px 32px 32px;
     text-align: center;
-    box-shadow: 0 24px 60px rgba(0,0,0,0.55);
+    box-shadow: 0 26px 64px rgba(30,58,110,0.24), var(--glass-inset);
     transform: translateY(22px) scale(0.97);
     transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
     position: relative;
@@ -536,19 +618,19 @@
   #escortsModal.open .modal-card { transform: translateY(0) scale(1); }
   .modal-close {
     position: absolute;
-    top: 14px; left: 16px;
+    top: 12px; left: 14px;
     background: none;
     border: none;
-    color: rgba(247,244,238,0.6);
+    color: rgba(22,36,74,0.45);
     font-size: 26px;
     cursor: pointer;
     line-height: 1;
     padding: 4px;
   }
-  .modal-close:hover { color: var(--cream); }
-  .modal-card h3 { font-size: 24px; font-weight: 800; margin-bottom: 10px; }
-  .modal-card h3 span { color: var(--orange); }
-  .modal-card p { font-weight: 300; font-size: 15px; line-height: 1.7; opacity: 0.9; }
+  .modal-close:hover { color: var(--ink); }
+  .modal-card h3 { font-size: 24px; font-weight: 800; margin-bottom: 10px; color: var(--ink); }
+  .modal-card h3 span { color: var(--orange-ink); }
+  .modal-card p { font-weight: 400; font-size: 15px; line-height: 1.7; color: var(--ink-2); }
 
   /* ===== Mini loading spinner ===== */
   #miniLoader {
@@ -557,7 +639,7 @@
     right: 60px;
     z-index: 60;
     width: 26px; height: 26px;
-    border: 3px solid rgba(247,244,238,0.2);
+    border: 3px solid rgba(22,36,74,0.16);
     border-top-color: var(--orange);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
@@ -571,13 +653,14 @@
   /* ===== Reduced motion ===== */
   @media (prefers-reduced-motion: reduce) {
     .bubble, .bubble::before, .mouse::after, .chev,
-    #escortsBtn.show, .hero-title, .hero-sub { animation: none !important; }
+    #escortsBtn.show, .hero-card { animation: none !important; }
   }
 </style>
 </head>
 <body>
 
 <canvas id="bgCanvas" aria-hidden="true"></canvas>
+<div id="wash" aria-hidden="true"></div>
 <canvas id="fgCanvas" aria-hidden="true"></canvas>
 <div id="vignette" aria-hidden="true"></div>
 
@@ -592,16 +675,20 @@
   <div class="loader-pct" id="loaderPct">0%</div>
 </div>
 
-<!-- Brand bar -->
+<!-- Brand chip -->
 <header id="brandBar">
-  <div class="brand-name">גפן <b>סוכנויות לביטוח ופיננסים</b></div>
-  <div class="brand-tag">מרכז תכנון וליווי פיננסי</div>
+  <div class="brand-chip">
+    <div class="brand-name">גפן <b>ביטוח ופיננסים</b></div>
+    <div class="brand-tag">מרכז תכנון וליווי פיננסי</div>
+  </div>
 </header>
 
 <!-- Hero overlay -->
 <div id="heroOverlay">
-  <div class="hero-title">ליווי פיננסי <em>בכל צומת</em> בחיים</div>
-  <div class="hero-sub">מהצעד הראשון ועד הפרישה — אנחנו איתכם בכל החלטה חשובה</div>
+  <div class="hero-card glass">
+    <div class="hero-title">ליווי פיננסי <em>בכל צומת</em> בחיים</div>
+    <div class="hero-sub">מהצעד הראשון ועד הפרישה — אנחנו איתכם בכל החלטה חשובה</div>
+  </div>
 </div>
 
 <!-- Scroll hint -->
@@ -632,17 +719,19 @@
 
 <!-- End overlay -->
 <div id="endOverlay" class="hidden">
-  <div class="end-title">נעים להכיר. <em>עכשיו תורכם</em></div>
-  <div class="end-actions">
-    <a class="end-btn call" href="tel:+97235727277">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
-      לתיאום שיחה
-    </a>
-    <a class="end-btn wa" href="https://wa.me/97235727277?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A7%D7%91%D7%9C%20%D7%9C%D7%99%D7%95%D7%95%D7%99%20%D7%A4%D7%99%D7%A0%D7%A0%D7%A1%D7%99" target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.297-.497.1-.198.05-.371-.025-.52-.074-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-      שלחו הודעה
-    </a>
-    <button class="end-btn replay" id="replayBtn">▶&nbsp; לצפייה מחדש</button>
+  <div class="end-card glass">
+    <div class="end-title">נעים להכיר. <em>עכשיו תורכם</em></div>
+    <div class="end-actions">
+      <a class="end-btn call" href="tel:+97235727277">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        לתיאום שיחה
+      </a>
+      <a class="end-btn wa" href="https://wa.me/97235727277?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A7%D7%91%D7%9C%20%D7%9C%D7%99%D7%95%D7%95%D7%99%20%D7%A4%D7%99%D7%A0%D7%A0%D7%A1%D7%99" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.297-.497.1-.198.05-.371-.025-.52-.074-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        שלחו הודעה
+      </a>
+      <button class="end-btn replay" id="replayBtn">▶&nbsp; לצפייה מחדש</button>
+    </div>
   </div>
 </div>
 
@@ -734,7 +823,6 @@
     bg.width = 160;
     bg.height = Math.round(160 * h / w) || 90;
     if (currentDrawn) draw(currentDrawn);
-    // one extra pass after things settle (mobile url-bar / rotation)
     clearTimeout(resizeSettle);
     resizeSettle = setTimeout(function () {
       var w2 = window.innerWidth, h2 = window.innerHeight;
