@@ -2,11 +2,45 @@
 <html dir="rtl" lang="he">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>גפן סוכנויות לביטוח ופיננסים | מרכז תכנון וליווי פיננסי</title>
+<meta name="description" content="ליווי פיננסי בכל צומת בחיים — פנסיה ותכנון פרישה, ניהול החיסכון השוטף, ביטוח בריאות וחיים, רכב, רכוש ומשכנתא. גפן סוכנויות לביטוח ופיננסים.">
+<meta name="theme-color" content="#121d36">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23121d36'/%3E%3Ctext x='50' y='74' font-size='64' font-family='Arial,sans-serif' font-weight='bold' text-anchor='middle' fill='%23f07d1a'%3E%D7%92%3C/text%3E%3C/svg%3E">
+
+<!-- Open Graph / share cards (WhatsApp, Facebook, LinkedIn) -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="גפן סוכנויות לביטוח ופיננסים">
+<meta property="og:title" content="גפן סוכנויות לביטוח ופיננסים | מרכז תכנון וליווי פיננסי">
+<meta property="og:description" content="ליווי פיננסי בכל צומת בחיים — פנסיה, חיסכון, ביטוח ומשכנתא. היכנסו למסע.">
+<meta property="og:url" content="https://gefen-website-weld.vercel.app/">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/elada4444-art/gefen-website@main/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="גפן סוכנויות לביטוח ופיננסים">
+<meta name="twitter:description" content="ליווי פיננסי בכל צומת בחיים — היכנסו למסע.">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/elada4444-art/gefen-website@main/assets/og.jpg">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "InsuranceAgency",
+  "name": "גפן סוכנויות לביטוח ופיננסים",
+  "description": "מרכז תכנון וליווי פיננסי — ליווי בכל צמתי החיים הפיננסיים: פנסיה, חיסכון, ביטוח ומשכנתא.",
+  "telephone": "+972-3-5727277",
+  "url": "https://gefen-website-weld.vercel.app/",
+  "image": "https://cdn.jsdelivr.net/gh/elada4444-art/gefen-website@main/assets/og.jpg",
+  "areaServed": "IL"
+}
+</script>
+
 <style>
   :root {
     --navy: #1c2a4a;
@@ -15,6 +49,7 @@
     --orange-soft: #ffa14e;
     --cream: #f7f4ee;
     --whatsapp: #25d366;
+    --safe-b: env(safe-area-inset-bottom, 0px);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
@@ -27,6 +62,7 @@
     color: var(--cream);
     user-select: none;
     -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
   }
 
   /* ===== Canvases ===== */
@@ -36,9 +72,40 @@
     width: 100vw;
     height: 100vh;
   }
+  @supports (height: 100dvh) {
+    #bgCanvas, #fgCanvas { height: 100dvh; }
+  }
   #bgCanvas {
     filter: blur(42px) brightness(0.55) saturate(1.1);
     transform: scale(1.15);
+  }
+
+  /* ===== Cinematic vignette ===== */
+  #vignette {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(8,12,24,0.34) 100%);
+  }
+
+  /* ===== Film progress bar ===== */
+  #filmProgress {
+    position: fixed;
+    top: 0; right: 0; left: 0;
+    height: 3px;
+    z-index: 46;
+    background: rgba(247,244,238,0.08);
+    pointer-events: none;
+  }
+  #filmProgress i {
+    display: block;
+    height: 100%;
+    background: linear-gradient(270deg, var(--orange), var(--orange-soft));
+    transform-origin: right;
+    transform: scaleX(0);
+    transition: transform 0.15s linear;
+    box-shadow: 0 0 8px rgba(240,125,26,0.6);
   }
 
   /* ===== Loader ===== */
@@ -87,7 +154,7 @@
   /* ===== Top brand bar ===== */
   #brandBar {
     position: fixed;
-    top: 0; right: 0; left: 0;
+    top: 3px; right: 0; left: 0;
     z-index: 40;
     padding: 20px 28px;
     display: flex;
@@ -110,7 +177,10 @@
     opacity: 0.9;
     text-shadow: 0 2px 10px rgba(0,0,0,0.5);
   }
-  @media (max-width: 560px) { .brand-tag { display: none; } }
+  @media (max-width: 560px) {
+    .brand-tag { display: none; }
+    #brandBar { padding: 14px 18px; }
+  }
 
   /* ===== Hero overlay (chapter 1) ===== */
   #heroOverlay {
@@ -121,11 +191,13 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
-    padding-bottom: 12vh;
+    padding-bottom: calc(13vh + var(--safe-b));
     background: linear-gradient(180deg, transparent 40%, rgba(12,19,38,0.72) 100%);
     transition: opacity 0.7s ease, visibility 0.7s;
     pointer-events: none;
     text-align: center;
+    padding-left: 16px;
+    padding-right: 16px;
   }
   #heroOverlay.hidden { opacity: 0; visibility: hidden; }
   .hero-title {
@@ -152,10 +224,10 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* ===== Scroll hint ===== */
+  /* ===== Scroll hint (chapter 1 only) ===== */
   #scrollHint {
     position: fixed;
-    bottom: 26px;
+    bottom: calc(26px + var(--safe-b));
     left: 50%;
     transform: translateX(-50%);
     z-index: 31;
@@ -196,8 +268,23 @@
     70%  { transform: translateY(12px); opacity: 0; }
     100% { transform: translateY(0); opacity: 0; }
   }
+  .chev {
+    display: none;
+    width: 14px; height: 14px;
+    border-top: 3px solid rgba(247,244,238,0.9);
+    border-right: 3px solid rgba(247,244,238,0.9);
+    transform: rotate(-45deg);
+    border-radius: 2px;
+    animation: chevFloat 1.5s ease-in-out infinite;
+  }
+  #scrollHint.touch .mouse { display: none; }
+  #scrollHint.touch .chev { display: block; }
+  @keyframes chevFloat {
+    0%, 100% { transform: rotate(-45deg) translate(0, 0); opacity: 0.5; }
+    50%      { transform: rotate(-45deg) translate(5px, -5px); opacity: 1; }
+  }
 
-  /* ===== Progress rail ===== */
+  /* ===== Progress rail + chapter tooltips ===== */
   #rail {
     position: fixed;
     top: 50%;
@@ -210,33 +297,58 @@
     align-items: center;
   }
   .dot {
+    position: relative;
     width: 10px; height: 10px;
     border-radius: 50%;
     background: rgba(247,244,238,0.35);
     border: none;
     cursor: pointer;
     padding: 0;
-    transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: background 0.35s, height 0.35s, border-radius 0.35s, box-shadow 0.35s;
     box-shadow: 0 1px 6px rgba(0,0,0,0.45);
   }
-  .dot:hover { background: rgba(247,244,238,0.75); transform: scale(1.25); }
+  .dot:hover { background: rgba(247,244,238,0.75); }
   .dot.active {
     background: var(--orange);
     height: 26px;
     border-radius: 6px;
     box-shadow: 0 0 14px rgba(240,125,26,0.7);
   }
+  @media (hover: hover) {
+    .dot::after {
+      content: attr(data-label);
+      position: absolute;
+      top: 50%;
+      right: 22px;
+      transform: translateY(-50%);
+      background: rgba(12,19,38,0.92);
+      border: 1px solid rgba(240,125,26,0.35);
+      color: var(--cream);
+      font-family: 'Heebo', sans-serif;
+      font-size: 12.5px;
+      font-weight: 400;
+      padding: 5px 12px;
+      border-radius: 8px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s ease;
+      direction: rtl;
+    }
+    .dot:hover::after { opacity: 1; }
+  }
   @media (max-width: 560px) { #rail { right: 10px; gap: 11px; } .dot { width: 8px; height: 8px; } }
 
   /* ===== Floating contact bubbles ===== */
   #contactStack {
     position: fixed;
-    bottom: 22px;
+    bottom: calc(22px + var(--safe-b));
     left: 20px;
     z-index: 50;
     display: flex;
     flex-direction: column;
     gap: 16px;
+    transition: opacity 0.5s ease;
   }
   .bubble {
     position: relative;
@@ -250,7 +362,7 @@
     animation: bob 3.4s ease-in-out infinite;
     transition: transform 0.25s ease;
   }
-  .bubble:hover { transform: scale(1.12); }
+  .bubble:hover { transform: scale(1.12); animation-play-state: paused; }
   .bubble svg { width: 27px; height: 27px; fill: #fff; }
   .bubble::before {
     content: '';
@@ -267,7 +379,6 @@
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-7px); }
   }
-  .bubble:hover { animation-play-state: paused; }
   @keyframes ripple {
     0%   { box-shadow: 0 0 0 0 rgba(255,255,255,0.45); }
     100% { box-shadow: 0 0 0 18px rgba(255,255,255,0); }
@@ -287,15 +398,21 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.25s ease;
-    direction: rtl;
+    direction: ltr;
   }
   .bubble:hover .tip { opacity: 1; }
   @media (hover: none) { .bubble .tip { display: none; } }
+  @media (max-width: 560px) {
+    .bubble { width: 52px; height: 52px; }
+    .bubble svg { width: 24px; height: 24px; }
+    /* at the finale the end-overlay has its own big buttons — clear the stage */
+    body.at-end #contactStack { opacity: 0; pointer-events: none; }
+  }
 
   /* ===== Escorts floating button (chapters 2-6) ===== */
   #escortsBtn {
     position: fixed;
-    bottom: 30px;
+    bottom: calc(30px + var(--safe-b));
     left: 50%;
     transform: translateX(-50%) translateY(80px);
     z-index: 45;
@@ -314,7 +431,6 @@
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.5s;
-    animation: none;
   }
   #escortsBtn.show {
     opacity: 1;
@@ -330,6 +446,10 @@
     0%, 100% { box-shadow: 0 10px 30px rgba(0,0,0,0.45), 0 0 14px rgba(240,125,26,0.2); }
     50%      { box-shadow: 0 10px 30px rgba(0,0,0,0.45), 0 0 30px rgba(240,125,26,0.55); }
   }
+  @media (max-width: 560px) {
+    /* keep clear of the contact bubbles in the corner */
+    #escortsBtn { bottom: calc(96px + var(--safe-b)); padding: 12px 24px; }
+  }
 
   /* ===== End overlay (chapter 7) ===== */
   #endOverlay {
@@ -340,12 +460,14 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
-    padding-bottom: 11vh;
+    padding-bottom: calc(11vh + var(--safe-b));
     gap: 22px;
     background: linear-gradient(180deg, transparent 45%, rgba(12,19,38,0.78) 100%);
     transition: opacity 0.7s ease, visibility 0.7s;
     pointer-events: none;
     text-align: center;
+    padding-left: 16px;
+    padding-right: 16px;
   }
   #endOverlay.hidden { opacity: 0; visibility: hidden; }
   #endOverlay > * { pointer-events: auto; }
@@ -428,10 +550,10 @@
   .modal-card h3 span { color: var(--orange); }
   .modal-card p { font-weight: 300; font-size: 15px; line-height: 1.7; opacity: 0.9; }
 
-  /* ===== Mini loading spinner (when a chapter isn't ready yet) ===== */
+  /* ===== Mini loading spinner ===== */
   #miniLoader {
     position: fixed;
-    bottom: 30px;
+    bottom: calc(30px + var(--safe-b));
     right: 60px;
     z-index: 60;
     width: 26px; height: 26px;
@@ -445,12 +567,22 @@
   }
   #miniLoader.show { opacity: 1; }
   @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ===== Reduced motion ===== */
+  @media (prefers-reduced-motion: reduce) {
+    .bubble, .bubble::before, .mouse::after, .chev,
+    #escortsBtn.show, .hero-title, .hero-sub { animation: none !important; }
+  }
 </style>
 </head>
 <body>
 
-<canvas id="bgCanvas"></canvas>
-<canvas id="fgCanvas"></canvas>
+<canvas id="bgCanvas" aria-hidden="true"></canvas>
+<canvas id="fgCanvas" aria-hidden="true"></canvas>
+<div id="vignette" aria-hidden="true"></div>
+
+<!-- Film progress -->
+<div id="filmProgress" aria-hidden="true"><i id="filmFill"></i></div>
 
 <!-- Loader -->
 <div id="loader">
@@ -475,7 +607,8 @@
 <!-- Scroll hint -->
 <div id="scrollHint">
   <div class="mouse"></div>
-  <div class="hint-text">גללו למסע</div>
+  <div class="chev"></div>
+  <div class="hint-text" id="hintText">גללו למסע</div>
 </div>
 
 <!-- Progress rail -->
@@ -486,11 +619,11 @@
   <a class="bubble wa" href="https://wa.me/97235727277?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A7%D7%91%D7%9C%20%D7%9C%D7%99%D7%95%D7%95%D7%99%20%D7%A4%D7%99%D7%A0%D7%A0%D7%A1%D7%99"
      target="_blank" rel="noopener" aria-label="שליחת הודעת WhatsApp">
     <span class="tip">דברו איתנו ב-WhatsApp</span>
-    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.297-.497.1-.198.05-.371-.025-.52-.074-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.297-.497.1-.198.05-.371-.025-.52-.074-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
   </a>
-  <a class="bubble phone" href="tel:+97235727277" aria-label="חיוג מיידי">
+  <a class="bubble phone" href="tel:+97235727277" aria-label="חיוג מיידי 03-5727277">
     <span class="tip">חייגו: 03-5727277</span>
-    <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
   </a>
 </div>
 
@@ -502,11 +635,11 @@
   <div class="end-title">נעים להכיר. <em>עכשיו תורכם</em></div>
   <div class="end-actions">
     <a class="end-btn call" href="tel:+97235727277">
-      <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
       לתיאום שיחה
     </a>
     <a class="end-btn wa" href="https://wa.me/97235727277?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A7%D7%91%D7%9C%20%D7%9C%D7%99%D7%95%D7%95%D7%99%20%D7%A4%D7%99%D7%A0%D7%A0%D7%A1%D7%99" target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.297-.497.1-.198.05-.371-.025-.52-.074-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.297-.497.1-.198.05-.371-.025-.52-.074-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
       שלחו הודעה
     </a>
     <button class="end-btn replay" id="replayBtn">▶&nbsp; לצפייה מחדש</button>
@@ -534,9 +667,20 @@
   var CHAPTERS = 7;              // 1 = hero image, 2..7 = videos
   var FIRST_VIDEO = 2;
   var ESCORT_MIN = 2, ESCORT_MAX = 6;
+  var BOOT_BUFFER = 40;          // frames of chapter 2 required before curtain-up
+
+  var CHAPTER_LABELS = [
+    'פתיחה',
+    'ברוכים הבאים',
+    'פנסיה ותכנון פרישה',
+    'ניהול החיסכון השוטף',
+    'ביטוח בריאות וחיים',
+    'רכב, רכוש ומשכנתא',
+    'סיום'
+  ];
 
   // Frames + hero are served from a CDN (jsDelivr, backed by the GitHub repo)
-  // so the Vercel deployment stays tiny. Set to '' to load from the same origin.
+  // so the deployment stays tiny. Set to '' to load from the same origin.
   var ASSET_BASE = 'https://cdn.jsdelivr.net/gh/elada4444-art/gefen-website@main/';
 
   function framePath(ch, i) {
@@ -549,8 +693,9 @@
   var animating = false;
   var lastGesture = 0;
   var wheelAccum = 0;
-  var chapters = {};             // ch -> { imgs: [], loaded, total, promise }
+  var chapters = {};             // ch -> { imgs: [], loaded, promise }
   var heroImg = new Image();
+  var heroLoaded = false;
   var currentDrawn = null;       // last drawn image (for resize redraw)
 
   /* ---------- DOM ---------- */
@@ -563,13 +708,22 @@
   var loaderPct = document.getElementById('loaderPct');
   var heroOverlay = document.getElementById('heroOverlay');
   var scrollHint = document.getElementById('scrollHint');
+  var hintText = document.getElementById('hintText');
   var endOverlay = document.getElementById('endOverlay');
   var escortsBtn = document.getElementById('escortsBtn');
   var escortsModal = document.getElementById('escortsModal');
   var miniLoader = document.getElementById('miniLoader');
   var rail = document.getElementById('rail');
+  var filmFill = document.getElementById('filmFill');
 
-  /* ---------- Canvas sizing ---------- */
+  /* ---------- Touch-aware hint ---------- */
+  var isTouch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+  if (isTouch) {
+    scrollHint.classList.add('touch');
+    hintText.textContent = 'החליקו למעלה למסע';
+  }
+
+  /* ---------- Canvas sizing (dvh-safe, keyboard/urlbar aware) ---------- */
   var DPR = Math.min(window.devicePixelRatio || 1, 2);
   function resize() {
     var w = window.innerWidth, h = window.innerHeight;
@@ -580,6 +734,8 @@
     if (currentDrawn) draw(currentDrawn);
   }
   window.addEventListener('resize', resize);
+  window.addEventListener('orientationchange', function () { setTimeout(resize, 250); });
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', resize);
 
   /* ---------- Drawing: blurred cover behind, contain in front ---------- */
   function draw(img) {
@@ -588,30 +744,45 @@
     var cw = fg.width, chh = fg.height;
     var iw = img.naturalWidth, ih = img.naturalHeight;
 
-    // background: cover into the small canvas (CSS blur handles the rest)
     var bw = bg.width, bh = bg.height;
     var cs = Math.max(bw / iw, bh / ih);
     var cwi = iw * cs, chi = ih * cs;
     bgx.drawImage(img, (bw - cwi) / 2, (bh - chi) / 2, cwi, chi);
 
-    // foreground: contain, centered
     var s = Math.min(cw / iw, chh / ih);
     var dw = iw * s, dh = ih * s;
     fgx.clearRect(0, 0, cw, chh);
     fgx.drawImage(img, (cw - dw) / 2, (chh - dh) / 2, dw, dh);
   }
 
-  /* ---------- Preloading ---------- */
-  var initialTotal = FRAMES + 1;   // hero + chapter 2
-  var initialLoaded = 0;
-  function bumpInitial() {
-    initialLoaded++;
-    var pct = Math.min(100, Math.round(initialLoaded / initialTotal * 100));
-    loaderFill.style.width = pct + '%';
-    loaderPct.textContent = pct + '%';
+  /* ---------- Film progress ---------- */
+  function setFilmProgress(ch, frameIdx) {
+    var p = 0;
+    if (ch >= FIRST_VIDEO) {
+      p = ((ch - FIRST_VIDEO) + frameIdx / (FRAMES - 1)) / (CHAPTERS - 1);
+    }
+    filmFill.style.transform = 'scaleX(' + Math.min(1, Math.max(0, p)) + ')';
   }
 
-  function loadChapter(ch, trackInitial) {
+  /* ---------- Boot progress: hero + first BOOT_BUFFER frames of ch.2 ---------- */
+  var bootDone = false;
+  function bootProgress() {
+    if (bootDone) return;
+    var ch2 = chapters[FIRST_VIDEO];
+    var got = (heroLoaded ? 1 : 0) + Math.min(ch2 ? ch2.loaded : 0, BOOT_BUFFER);
+    var total = 1 + BOOT_BUFFER;
+    var pct = Math.min(100, Math.round(got / total * 100));
+    loaderFill.style.width = pct + '%';
+    loaderPct.textContent = pct + '%';
+    if (got >= total) {
+      bootDone = true;
+      draw(heroImg);
+      updateUI();
+      setTimeout(function () { loader.classList.add('hidden'); }, 300);
+    }
+  }
+
+  function loadChapter(ch) {
     if (chapters[ch]) return chapters[ch].promise;
     var entry = { imgs: new Array(FRAMES), loaded: 0 };
     chapters[ch] = entry;
@@ -623,7 +794,7 @@
           im.onload = im.onerror = function () {
             done++;
             entry.loaded = done;
-            if (trackInitial) bumpInitial();
+            if (ch === FIRST_VIDEO) bootProgress();
             if (done === FRAMES) resolve(entry);
           };
           im.src = framePath(ch, i);
@@ -639,7 +810,7 @@
     (function next() {
       var ch = seq.shift();
       if (!ch) return;
-      loadChapter(ch, false).then(next);
+      loadChapter(ch).then(next);
     })();
   }
 
@@ -671,6 +842,7 @@
         if (fi !== lastIdx) {
           lastIdx = fi;
           draw(entry.imgs[fi]);
+          setFilmProgress(ch, fi);
         }
         if (idx < FRAMES - 1) nextTick(tick);
         else resolve();
@@ -680,26 +852,28 @@
   }
 
   function updateUI() {
-    // hero overlay + hint
     heroOverlay.classList.toggle('hidden', current !== 1 || animating);
-    scrollHint.classList.toggle('hidden', animating || current === CHAPTERS);
-    // escorts button
+    scrollHint.classList.toggle('hidden', current !== 1 || animating);
     var show = !animating && current >= ESCORT_MIN && current <= ESCORT_MAX;
     escortsBtn.classList.toggle('show', show);
-    // end overlay
     endOverlay.classList.toggle('hidden', !(current === CHAPTERS && !animating));
-    // rail
+    document.body.classList.toggle('at-end', current === CHAPTERS && !animating);
     var dots = rail.children;
     for (var i = 0; i < dots.length; i++) {
-      dots[i].classList.toggle('active', (i + 1) === current);
+      var active = (i + 1) === current;
+      dots[i].classList.toggle('active', active);
+      if (active) dots[i].setAttribute('aria-current', 'step');
+      else dots[i].removeAttribute('aria-current');
     }
+    if (current === 1) setFilmProgress(1, 0);
+    else if (!animating) setFilmProgress(current, FRAMES - 1);
   }
 
   function ensureLoaded(ch) {
     var entry = chapters[ch];
     if (entry && entry.loaded === FRAMES) return Promise.resolve();
     miniLoader.classList.add('show');
-    return loadChapter(ch, false).then(function () {
+    return loadChapter(ch).then(function () {
       miniLoader.classList.remove('show');
     });
   }
@@ -745,7 +919,6 @@
     animating = true;
     updateUI();
     ensureLoaded(ch).then(function () {
-      // arrive by playing that chapter (film feel), regardless of distance
       return playChapter(ch, false);
     }).then(function () {
       current = ch;
@@ -765,7 +938,8 @@
 
   window.addEventListener('wheel', function (e) {
     e.preventDefault();
-    if (animating) { wheelAccum = 0; return; }
+    // swallow trackpad inertia during playback and right after it
+    if (animating || performance.now() - lastGesture < COOLDOWN) { wheelAccum = 0; return; }
     wheelAccum += e.deltaY;
     if (Math.abs(wheelAccum) > 40) {
       var dir = wheelAccum > 0 ? 1 : -1;
@@ -789,6 +963,8 @@
   window.addEventListener('keydown', function (e) {
     if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); gesture(1); }
     if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); gesture(-1); }
+    if (e.key === 'Home') { e.preventDefault(); jumpTo(1); }
+    if (e.key === 'End') { e.preventDefault(); jumpTo(CHAPTERS); }
     if (e.key === 'Escape') escortsModal.classList.remove('open');
   });
 
@@ -797,7 +973,8 @@
     (function (i) {
       var d = document.createElement('button');
       d.className = 'dot';
-      d.setAttribute('aria-label', 'פרק ' + i);
+      d.setAttribute('aria-label', CHAPTER_LABELS[i - 1]);
+      d.setAttribute('data-label', CHAPTER_LABELS[i - 1]);
       d.addEventListener('click', function () { jumpTo(i); });
       rail.appendChild(d);
     })(i);
@@ -824,18 +1001,16 @@
 
   /* ---------- Boot ---------- */
   resize();
-  var heroReady = new Promise(function (resolve) {
-    heroImg.onload = function () { bumpInitial(); resolve(); };
-    heroImg.onerror = resolve;
+  // hero: light WebP first, PNG fallback
+  heroImg.onload = function () { heroLoaded = true; bootProgress(); };
+  heroImg.onerror = function () {
+    heroImg.onerror = function () { heroLoaded = true; bootProgress(); };
     heroImg.src = ASSET_BASE + '1.png';
-  });
+  };
+  heroImg.src = ASSET_BASE + 'assets/hero.webp';
 
-  Promise.all([heroReady, loadChapter(FIRST_VIDEO, true)]).then(function () {
-    draw(heroImg);
-    updateUI();
-    setTimeout(function () { loader.classList.add('hidden'); }, 350);
-    preloadRest();
-  });
+  loadChapter(FIRST_VIDEO).then(function () { preloadRest(); });
+  bootProgress();
 })();
 </script>
 </body>
