@@ -724,14 +724,22 @@
   }
 
   /* ---------- Canvas sizing (dvh-safe, keyboard/urlbar aware) ---------- */
-  var DPR = Math.min(window.devicePixelRatio || 1, 2);
+  var resizeSettle = null;
   function resize() {
     var w = window.innerWidth, h = window.innerHeight;
-    fg.width = Math.round(w * DPR);
-    fg.height = Math.round(h * DPR);
+    if (!w || !h) return;  // transient 0-size during rotation/resize — keep last good bitmap
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    fg.width = Math.round(w * dpr);
+    fg.height = Math.round(h * dpr);
     bg.width = 160;
     bg.height = Math.round(160 * h / w) || 90;
     if (currentDrawn) draw(currentDrawn);
+    // one extra pass after things settle (mobile url-bar / rotation)
+    clearTimeout(resizeSettle);
+    resizeSettle = setTimeout(function () {
+      var w2 = window.innerWidth, h2 = window.innerHeight;
+      if (w2 && h2 && (Math.round(w2 * dpr) !== fg.width || Math.round(h2 * dpr) !== fg.height)) resize();
+    }, 220);
   }
   window.addEventListener('resize', resize);
   window.addEventListener('orientationchange', function () { setTimeout(resize, 250); });
