@@ -536,36 +536,46 @@
     .bubble svg { width: 24px; height: 24px; }
   }
 
-  /* ===== Escorts floating button (chapters 2-6) ===== */
-  #escortsBtn {
+  /* ===== Twin floating pills (chapters 2-6): escorts at the foot of the
+     screen, further-info mirroring it at the head ===== */
+  #escortsBtn, #infoBtn {
     position: fixed;
-    bottom: calc(30px + var(--safe-b));
     left: 50%;
-    transform: translateX(-50%) translateY(80px);
     z-index: 45;
-    border: none;
     cursor: pointer;
     font-family: inherit;
-    font-size: clamp(14px, 2.2vw, 17px);
     font-weight: 600;
     color: #fff;
     background: linear-gradient(135deg, rgba(28,42,74,0.92), rgba(18,29,54,0.92));
     border: 1px solid rgba(240,125,26,0.75);
-    padding: 14px 30px;
     border-radius: 99px;
+    -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
     box-shadow: 0 10px 30px rgba(0,0,0,0.45), 0 0 18px rgba(240,125,26,0.25);
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.5s;
   }
-  #escortsBtn.show {
+  #escortsBtn {
+    bottom: calc(30px + var(--safe-b));
+    transform: translateX(-50%) translateY(80px);
+    font-size: clamp(14px, 2.2vw, 17px);
+    padding: 14px 30px;
+  }
+  /* same pill, scaled down to its shorter label */
+  #infoBtn {
+    top: 90px;
+    transform: translateX(-50%) translateY(-60px);
+    font-size: clamp(12.5px, 1.9vw, 14.5px);
+    padding: 9px 21px;
+  }
+  #escortsBtn.show, #infoBtn.show {
     opacity: 1;
     visibility: visible;
     transform: translateX(-50%) translateY(0);
     animation: glowPulse 2.6s ease-in-out infinite;
   }
-  #escortsBtn:hover {
+  #escortsBtn:hover, #infoBtn:hover {
     background: linear-gradient(135deg, var(--orange), #d96a0a);
     border-color: var(--orange-soft);
   }
@@ -574,8 +584,10 @@
     50%      { box-shadow: 0 10px 30px rgba(0,0,0,0.45), 0 0 30px rgba(240,125,26,0.55); }
   }
   @media (max-width: 560px) {
-    /* keep clear of the contact bubbles in the corner */
+    /* keep clear of the contact bubbles in the corners */
     #escortsBtn { bottom: calc(96px + var(--safe-b)); padding: 12px 24px; }
+    /* and clear of the shorter mobile header */
+    #infoBtn { top: 76px; padding: 8px 18px; }
   }
 
   /* ===== End overlay (chapter 7) ===== */
@@ -633,8 +645,8 @@
     font-weight: 400;
   }
 
-  /* ===== Escorts modal (placeholder) ===== */
-  #escortsModal {
+  /* ===== Modals: escorts + further info ===== */
+  #escortsModal, #infoModal {
     position: fixed;
     inset: 0;
     z-index: 90;
@@ -642,12 +654,13 @@
     align-items: center;
     justify-content: center;
     background: rgba(8,13,26,0.66);
+    -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.35s ease, visibility 0.35s;
   }
-  #escortsModal.open { opacity: 1; visibility: visible; }
+  #escortsModal.open, #infoModal.open { opacity: 1; visibility: visible; }
   .modal-card {
     width: min(440px, 88vw);
     background: linear-gradient(160deg, #26365e, var(--navy-deep));
@@ -660,7 +673,7 @@
     transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
     position: relative;
   }
-  #escortsModal.open .modal-card { transform: translateY(0) scale(1); }
+  #escortsModal.open .modal-card, #infoModal.open .modal-card { transform: translateY(0) scale(1); }
   .modal-close {
     position: absolute;
     top: 14px; left: 16px;
@@ -676,14 +689,22 @@
   .modal-card h3 { font-size: 24px; font-weight: 800; margin-bottom: 10px; }
   .modal-card h3 span { color: var(--orange); }
   .modal-card p { font-weight: 300; font-size: 15px; line-height: 1.7; opacity: 0.9; }
+  .modal-kicker {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    color: var(--orange);
+    margin-bottom: 6px;
+  }
 
   /* ===== Mini loading spinner ===== */
-  /* centred under the header — the bottom corners now belong to the CTA bubbles.
-     Centred with a left offset, not translate(), so the spin transform stays free */
+  /* mid-left: the bottom corners belong to the CTA bubbles, bottom-centre to the
+     escorts pill and top-centre to the info pill. Offset rather than translated,
+     so the spin transform stays free. */
   #miniLoader {
     position: fixed;
-    top: 84px;
-    left: calc(50% - 13px);
+    top: calc(50% - 13px);
+    left: 20px;
     z-index: 60;
     width: 26px; height: 26px;
     border: 3px solid rgba(247,244,238,0.2);
@@ -767,7 +788,8 @@
   </a>
 </div>
 
-<!-- Escorts button (chapters 2-6) -->
+<!-- Floating pills (chapters 2-6): info at the head, escorts at the foot -->
+<button id="infoBtn">למידע נוסף</button>
 <button id="escortsBtn">לחץ לראות את המלווים הרלוונטיים</button>
 
 <!-- End overlay -->
@@ -792,6 +814,16 @@
     <button class="modal-close" id="modalClose" aria-label="סגירה">&times;</button>
     <h3>המלווים <span>שלנו</span></h3>
     <p>כאן יופיעו המלווים הרלוונטיים לצומת הפיננסית שבה אתם נמצאים.<br>החלק הזה בבנייה — ממשיכים לבנות אותו יחד.</p>
+  </div>
+</div>
+
+<!-- Further-info modal: content is filled per department from DEPARTMENTS[].info -->
+<div id="infoModal">
+  <div class="modal-card">
+    <button class="modal-close" id="infoModalClose" aria-label="סגירה">&times;</button>
+    <div class="modal-kicker">מידע נוסף</div>
+    <h3 id="infoTitle"></h3>
+    <p id="infoBody"></p>
   </div>
 </div>
 
@@ -827,13 +859,15 @@
   // ומחזור משכנתא"), so a department maps to the chapter that comes to rest on
   // its headline — not the one that opens with it. "ברוכים הבאים" is the home
   // frame shown the moment loading finishes.
+  // `info` fills the "למידע נוסף" modal for that department. Leave it empty and
+  // the modal shows a short placeholder instead — drop the copy in here.
   var DEPARTMENTS = [
-    { ch: 1, title: 'ברוכים הבאים', sub: 'הכירו את גפן' },
-    { ch: 2, title: 'פנסיה ותכנון פרישה', sub: 'קרנות פנסיה ותכנון פרישה מתקדם' },
-    { ch: 3, title: 'השקעות וחיסכון', sub: 'קופות גמל, קרנות השתלמות, פוליסות חיסכון, קרנות נאמנות, Private Equity' },
-    { ch: 4, title: 'ביטוח בריאות וחיים', sub: 'חיים, אובדן כושר עבודה, מחלות קשות, ביטוח בריאות, ביטוח משכנתא' },
-    { ch: 5, title: 'ביטוח רכוש (אלמנטרי)', sub: 'ביטוח רכב, דירה, עסקית, אחריות מקצועית, עבודות קבלניות ועוד' },
-    { ch: 6, title: 'ייעוץ משכנתא', sub: 'ייעוץ ומחזור משכנתאות, משכנתא הפוכה ועוד' }
+    { ch: 1, title: 'ברוכים הבאים', sub: 'הכירו את גפן', info: '' },
+    { ch: 2, title: 'פנסיה ותכנון פרישה', sub: 'קרנות פנסיה ותכנון פרישה מתקדם', info: '' },
+    { ch: 3, title: 'השקעות וחיסכון', sub: 'קופות גמל, קרנות השתלמות, פוליסות חיסכון, קרנות נאמנות, Private Equity', info: '' },
+    { ch: 4, title: 'ביטוח בריאות וחיים', sub: 'חיים, אובדן כושר עבודה, מחלות קשות, ביטוח בריאות, ביטוח משכנתא', info: '' },
+    { ch: 5, title: 'ביטוח רכוש (אלמנטרי)', sub: 'ביטוח רכב, דירה, עסקית, אחריות מקצועית, עבודות קבלניות ועוד', info: '' },
+    { ch: 6, title: 'ייעוץ משכנתא', sub: 'ייעוץ ומחזור משכנתאות, משכנתא הפוכה ועוד', info: '' }
   ];
 
   // Frames + hero are served from a CDN (jsDelivr, backed by the GitHub repo)
@@ -876,6 +910,10 @@
   var deptBtn = document.getElementById('deptBtn');
   var deptMenu = document.getElementById('deptMenu');
   var brandLogo = document.getElementById('brandLogo');
+  var infoBtn = document.getElementById('infoBtn');
+  var infoModal = document.getElementById('infoModal');
+  var infoTitle = document.getElementById('infoTitle');
+  var infoBody = document.getElementById('infoBody');
 
   /* ---------- Touch-aware hint ---------- */
   var isTouch = window.matchMedia('(hover: none), (pointer: coarse)').matches;
@@ -1029,6 +1067,7 @@
     scrollHint.classList.toggle('hidden', current !== 1 || animating);
     var show = !animating && current >= ESCORT_MIN && current <= ESCORT_MAX;
     escortsBtn.classList.toggle('show', show);
+    infoBtn.classList.toggle('show', show);
     endOverlay.classList.toggle('hidden', !(current === CHAPTERS && !animating));
     document.body.classList.toggle('at-end', current === CHAPTERS && !animating);
     var dots = rail.children;
@@ -1146,7 +1185,11 @@
     if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); gesture(-1); }
     if (e.key === 'Home') { e.preventDefault(); jumpTo(1); }
     if (e.key === 'End') { e.preventDefault(); jumpTo(CHAPTERS); }
-    if (e.key === 'Escape') { escortsModal.classList.remove('open'); closeDept(); }
+    if (e.key === 'Escape') {
+      escortsModal.classList.remove('open');
+      infoModal.classList.remove('open');
+      closeDept();
+    }
   });
 
   /* ---------- Rail ---------- */
@@ -1244,6 +1287,28 @@
   });
   escortsModal.addEventListener('click', function (e) {
     if (e.target === escortsModal) escortsModal.classList.remove('open');
+  });
+
+  /* ---------- Further-info modal (per department) ---------- */
+  function deptForChapter(ch) {
+    for (var i = 0; i < DEPARTMENTS.length; i++) {
+      if (DEPARTMENTS[i].ch === ch) return DEPARTMENTS[i];
+    }
+    return null;
+  }
+  infoBtn.addEventListener('click', function () {
+    var d = deptForChapter(current);
+    infoTitle.textContent = d ? d.title : 'השירותים שלנו';
+    infoBody.textContent = (d && d.info)
+      ? d.info
+      : 'כאן יפורטו השירותים הניתנים במחלקה זו. החלק הזה בבנייה — ממשיכים לבנות אותו יחד.';
+    infoModal.classList.add('open');
+  });
+  document.getElementById('infoModalClose').addEventListener('click', function () {
+    infoModal.classList.remove('open');
+  });
+  infoModal.addEventListener('click', function (e) {
+    if (e.target === infoModal) infoModal.classList.remove('open');
   });
 
   /* ---------- Replay ---------- */
