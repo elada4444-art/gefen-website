@@ -170,9 +170,11 @@
     pointer-events: auto;
     display: inline-flex;
     align-items: center;
-    padding: 8px 16px;
+    padding: 8px 14px;
     border-radius: 14px;
-    background: rgba(255,255,255,0.94);
+    /* solid white: the logo artwork is opaque white, so a translucent chip
+       would show a brighter rectangle around it */
+    background: #fff;
     border: 1px solid rgba(255,255,255,0.6);
     box-shadow: 0 8px 24px rgba(0,0,0,0.32);
     cursor: pointer;
@@ -809,15 +811,17 @@
     'סיום'
   ];
 
-  // Department menu. Titles are read off the headlines baked into the films —
-  // adjust freely to match the agency's real department split.
+  // Department menu, as defined by the agency.
+  // Chapter 6 carries two departments: the property-insurance opening and the
+  // mortgage segment that starts around frame 48 — `from` drops the viewer
+  // straight into the relevant half.
   var DEPARTMENTS = [
     { ch: 2, title: 'ברוכים הבאים', sub: 'הכירו את גפן' },
-    { ch: 3, title: 'פנסיה ותכנון פרישה', sub: 'קרנות פנסיה וביטוחי מנהלים' },
-    { ch: 4, title: 'ניהול החיסכון השוטף', sub: 'קופות גמל, קרנות השתלמות, פוליסות חיסכון' },
-    { ch: 5, title: 'ביטוח בריאות וחיים', sub: 'חיים, אובדן כושר עבודה, מחלות קשות' },
-    { ch: 6, title: 'רכב, רכוש ומשכנתא', sub: 'ביטוח אלמנטרי, ייעוץ ומחזור משכנתא' },
-    { ch: 7, title: 'יצירת קשר', sub: 'נשמח ללוות אתכם' }
+    { ch: 3, title: 'פנסיה ותכנון פרישה', sub: 'קרנות פנסיה ותכנון פרישה מתקדם' },
+    { ch: 4, title: 'השקעות וחיסכון', sub: 'קופות גמל, קרנות השתלמות, פוליסות חיסכון, קרנות נאמנות, Private Equity' },
+    { ch: 5, title: 'ביטוח בריאות וחיים', sub: 'חיים, אובדן כושר עבודה, מחלות קשות, ביטוח בריאות, ביטוח משכנתא' },
+    { ch: 6, title: 'ביטוח רכוש (אלמנטרי)', sub: 'ביטוח רכב, דירה, עסקית, אחריות מקצועית, עבודות קבלניות ועוד' },
+    { ch: 6, from: 48, title: 'ייעוץ משכנתא', sub: 'ייעוץ ומחזור משכנתאות, משכנתא הפוכה ועוד' }
   ];
 
   // Frames + hero are served from a CDN (jsDelivr, backed by the GitHub repo)
@@ -831,6 +835,7 @@
 
   /* ---------- State ---------- */
   var current = 1;               // displayed chapter
+  var currentFrom = 0;           // entry frame of the current chapter (department deep-links)
   var animating = false;
   var lastGesture = 0;
   var wheelAccum = 0;
@@ -981,22 +986,26 @@
     to = setTimeout(run, 42);
   }
 
-  function playChapter(ch, reverse) {
+  // `from` lets a chapter be entered mid-way (used by the department menu when
+  // two departments share one film). Reverse playback always runs the full span.
+  function playChapter(ch, reverse, from) {
     return new Promise(function (resolve) {
       var entry = chapters[ch];
+      var start = reverse ? 0 : Math.min(Math.max(0, from || 0), FRAMES - 1);
+      var span = FRAMES - start;
       var t0 = null;
       var lastIdx = -1;
       function tick(ts) {
         if (t0 === null) t0 = ts;
         var idx = Math.floor((ts - t0) / 1000 * FPS);
-        if (idx >= FRAMES) idx = FRAMES - 1;
-        var fi = reverse ? (FRAMES - 1 - idx) : idx;
+        if (idx >= span) idx = span - 1;
+        var fi = reverse ? (FRAMES - 1 - idx) : (start + idx);
         if (fi !== lastIdx) {
           lastIdx = fi;
           draw(entry.imgs[fi]);
           setFilmProgress(ch, fi);
         }
-        if (idx < FRAMES - 1) nextTick(tick);
+        if (idx < span - 1) nextTick(tick);
         else resolve();
       }
       nextTick(tick);
@@ -1040,6 +1049,7 @@
       return playChapter(target, false);
     }).then(function () {
       current = target;
+      currentFrom = 0;
       animating = false;
       lastGesture = performance.now();
       updateUI();
@@ -1053,6 +1063,7 @@
     updateUI();
     playChapter(played, true).then(function () {
       current = played - 1;
+      currentFrom = 0;
       if (current === 1) draw(heroImg);
       else draw(chapters[current].imgs[FRAMES - 1]);
       animating = false;
@@ -1061,10 +1072,13 @@
     });
   }
 
-  function jumpTo(ch) {
-    if (animating || ch === current) return;
+  function jumpTo(ch, from) {
+    from = from || 0;
+    if (animating) return;
+    if (ch === current && from === currentFrom) return;   // already sitting there
     if (ch === 1) {
       current = 1;
+      currentFrom = 0;
       draw(heroImg);
       updateUI();
       return;
@@ -1072,9 +1086,10 @@
     animating = true;
     updateUI();
     ensureLoaded(ch).then(function () {
-      return playChapter(ch, false);
+      return playChapter(ch, false, from);
     }).then(function () {
       current = ch;
+      currentFrom = from;
       animating = false;
       updateUI();
     });
@@ -1135,15 +1150,16 @@
   }
 
   /* ---------- Department menu ---------- */
-  DEPARTMENTS.forEach(function (d) {
+  DEPARTMENTS.forEach(function (d, idx) {
     var b = document.createElement('button');
     b.className = 'dept-item';
     b.setAttribute('role', 'menuitem');
     b.setAttribute('data-ch', d.ch);
+    b.setAttribute('data-from', d.from || 0);
 
     var num = document.createElement('span');
     num.className = 'dept-num';
-    num.textContent = d.ch - 1;
+    num.textContent = idx + 1;
 
     var txt = document.createElement('span');
     txt.className = 'dept-txt';
@@ -1160,16 +1176,23 @@
     b.appendChild(txt);
     b.addEventListener('click', function () {
       closeDept();
-      jumpTo(d.ch);
+      jumpTo(d.ch, d.from);
     });
     deptMenu.appendChild(b);
   });
 
+  // Two departments can share a chapter, so prefer the one whose entry frame
+  // matches; otherwise fall back to the first department on this chapter.
   function markDept() {
     var items = deptMenu.children;
-    for (var i = 0; i < items.length; i++) {
-      items[i].classList.toggle('current', +items[i].getAttribute('data-ch') === current);
+    var exact = -1, fallback = -1, i;
+    for (i = 0; i < items.length; i++) {
+      if (+items[i].getAttribute('data-ch') !== current) continue;
+      if (fallback < 0) fallback = i;
+      if (+items[i].getAttribute('data-from') === currentFrom) exact = i;
     }
+    var sel = exact >= 0 ? exact : fallback;
+    for (i = 0; i < items.length; i++) items[i].classList.toggle('current', i === sel);
   }
   function openDept() {
     deptMenu.classList.add('open');
