@@ -86,10 +86,28 @@ if [ -f "$AMB" ]; then
      [0:a]volume=0.7[clip];\
      [clip][amb]amix=inputs=2:duration=first:normalize=0[mix];\
      [mix]loudnorm=I=-16:TP=-1.5[a]" \
-    -map 0:v -map "[a]" -c:v copy -c:a aac -ar 48000 -ac 2 -b:a 160k -movflags +faststart "$OUT"
+    -map 0:v -map "[a]" -c:v copy -c:a aac -ar 48000 -ac 2 -b:a 160k -movflags +faststart "$WORK/mixed.mp4"
 else
   echo "== no ambience bed found ($AMB); keeping clip audio =="
-  cp "$WORK/base.mp4" "$OUT"
+  cp "$WORK/base.mp4" "$WORK/mixed.mp4"
+fi
+
+# Extras: a permanent bottom-right disclaimer, and a top-left intro caption that
+# "types" itself over the first ~5s then fades out. Frames come from render-extras.js
+# (overlays/extras/disc.png + intro_%03d.png, played back at 10fps).
+EX="$OV/extras"
+if [ -f "$EX/disc.png" ] && [ -f "$EX/intro_001.png" ]; then
+  echo "== burn disclaimer + intro caption =="
+  ffmpeg -y -i "$WORK/mixed.mp4" -loop 1 -i "$EX/disc.png" \
+    -filter_complex "[1:v]format=rgba[d];[0:v][d]overlay=0:0:shortest=1[v]" \
+    -map "[v]" -map 0:a -c:v libx264 -preset "$PRESET" -crf 19 -pix_fmt yuv420p -c:a copy -movflags +faststart "$WORK/disc.mp4"
+  ffmpeg -y -i "$WORK/disc.mp4" -framerate 10 -i "$EX/intro_%03d.png" \
+    -filter_complex "[1:v]format=rgba,fade=t=out:st=4.2:d=0.8:alpha=1,setpts=PTS-STARTPTS[intro];\
+                     [0:v][intro]overlay=0:0:enable='lt(t,5.2)'[v]" \
+    -map "[v]" -map 0:a -c:v libx264 -preset "$PRESET" -crf 19 -pix_fmt yuv420p -c:a copy -movflags +faststart "$OUT"
+else
+  echo "== no extras found ($EX); skipping caption/disclaimer =="
+  cp "$WORK/mixed.mp4" "$OUT"
 fi
 
 echo "done: $OUT"
