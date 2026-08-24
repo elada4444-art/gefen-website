@@ -1,0 +1,45 @@
+name: fetch-assets
+
+on:
+  workflow_dispatch:
+    inputs:
+      manifest:
+        description: 'JSON array of {"url":"...","name":"..."} objects to download'
+        required: true
+        type: string
+      dest:
+        description: 'Destination directory inside the repo'
+        required: false
+        default: 'marketing/savings-video/incoming'
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - name: Download files
+        env:
+          MANIFEST: ${{ inputs.manifest }}
+          DEST: ${{ inputs.dest }}
+        run: |
+          mkdir -p "$DEST"
+          echo "$MANIFEST" | jq -c '.[]' | while read -r item; do
+            url=$(echo "$item" | jq -r '.url')
+            name=$(echo "$item" | jq -r '.name')
+            echo "Fetching $name"
+            curl -sSL --fail --max-time 300 -o "$DEST/$name" "$url"
+            ls -la "$DEST/$name"
+          done
+      - name: Commit and push
+        run: |
+          git config user.name "gefen-assets-bot"
+          git config user.email "actions@github.com"
+          git add -A
+          git commit -m "Fetch generated assets" || echo "nothing to commit"
+          git push
