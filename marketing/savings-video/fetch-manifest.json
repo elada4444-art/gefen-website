@@ -1,8 +1,7 @@
 {
-  "nonce": 1,
+  "nonce": 2,
   "dest": "marketing/savings-video/incoming",
   "files": [
-    {"url": "https://pikaso.cdnpk.net/private/production/5251296681/render.jpg?token=exp=1787961600~hmac=eb9e55cf819ab0b93a8c9167f8a39da092d3cd65a6e39e9e81d3f8fcbc90464f", "name": "master_a.jpg"},
-    {"url": "https://pikaso.cdnpk.net/private/production/5251297230/render.jpg?token=exp=1787961600~hmac=fc7030041efcb3f8bf193f696c46fdd72b69e7902bcb9742af324668f5ad2605", "name": "master_b.jpg"}
+    {"url": "https://pikaso.cdnpk.net/private/production/5251663712/2ec70052-2ec8-46a8-8c2c-2e2a6de21f16-0.mp4?token=exp=1787961600~hmac=577b42c6cd3e0a9223731dc71b6e81cef29ec9ac6732dbb698f64333f79619cb", "name": "clip1.mp4"}
   ]
 }
