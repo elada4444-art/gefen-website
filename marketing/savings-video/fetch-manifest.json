@@ -1,0 +1,8 @@
+{
+  "nonce": 1,
+  "dest": "marketing/savings-video/incoming",
+  "files": [
+    {"url": "https://pikaso.cdnpk.net/private/production/5251296681/render.jpg?token=exp=1787961600~hmac=eb9e55cf819ab0b93a8c9167f8a39da092d3cd65a6e39e9e81d3f8fcbc90464f", "name": "master_a.jpg"},
+    {"url": "https://pikaso.cdnpk.net/private/production/5251297230/render.jpg?token=exp=1787961600~hmac=fc7030041efcb3f8bf193f696c46fdd72b69e7902bcb9742af324668f5ad2605", "name": "master_b.jpg"}
+  ]
+}
