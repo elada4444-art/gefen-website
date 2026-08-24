@@ -19,22 +19,27 @@
 ## איך זה נבנה
 - **וידאו:** נוצר ב-Magnific עם המודל `bytedance-seedance-pro-2.0` (image-to-video),
   מתוך פריים מאסטר אחד (שוט קבוצתי במסעדה) — כך הדמויות עקביות בין הקליפים.
-  קליפ 1 ב-1080p, קליפים 2-4 ב-720p, כולם 9:16 עם אווירת מסעדה טבעית (`withSoundEffects`).
+  קליפ 1 ב-1080p, קליפים 2-4 ב-720p, כולם 9:16.
 - **טקסטים בעברית:** לא רונדרו על ידי מודל הווידאו (עברית יוצאת שבורה) אלא **נצרבו מקומית**:
   `overlays/bubbles.html` + `overlays/endcard.html` מרונדרים ל-PNG שקופים עם Playwright + Chromium
   ופונט המותג **Heebo**, ואז נצרבים על הווידאו עם ffmpeg (`compose.sh`).
+- **סאונד:** הסאונד שמודל הווידאו מחזיר לכל קליפ לא אחיד (חלק מהקליפים כמעט שקטים), לכן
+  יוצר **פס אווירת מסעדה רציף** (`incoming/ambience.mp3`, נוצר ב-Magnific SFX) שמנורמל ומעורבב
+  מתחת לכל הסרטון ברמה קבועה ונשמעת, עם fade-out בסיום. אין מוזיקה — רק אווירה.
 - **קונטקסט מותג:** navy `#121d36` / `#1c2a4a`, כתום `#f07d1a`, קרם `#f7f4ee`, פונט Heebo.
 
 ## מבנה
 ```
 marketing/savings-video/
 ├── README.md                 ← המסמך הזה
-├── compose.sh                ← צריבת טקסטים + חיבור עם קרוס-פייד (ffmpeg)
+├── compose.sh                ← צריבת טקסטים + חיבור + מיזוג אווירה (ffmpeg)
 ├── overlays/
 │   ├── bubbles.html          ← 5 בועות הטקסט בעברית (RTL, Heebo)
 │   ├── endcard.html          ← שקופית הסיום הממותגת
 │   └── render.js             ← מרנדר את ה-HTML ל-PNG שקופים (Playwright)
-└── incoming/                 ← הקליפים הגולמיים מ-Magnific (clip1-4.mp4)
+└── incoming/                 ← קלטים גולמיים מ-Magnific
+    ├── clip1-4.mp4           ← הקליפים
+    └── ambience.mp3          ← פס אווירת המסעדה
 ```
 > הקובץ הסופי `gefen-savings-video.mp4` אינו נשמר בגיט (`*.mp4` ב-.gitignore ברמת הריפו)
 > — הוא נמסר ישירות, וניתן לשחזר אותו במדויק מהקבצים כאן.
@@ -54,3 +59,4 @@ node overlays/render.js                 # יוצר overlays/*.png
 - קליפ 2 (מיכל): `nVeBRt0YQD`
 - קליפ 3 (נועם): `1lwOH6vr4r`
 - קליפ 4 (דן): `lJ461e2gv9`
+- אווירת מסעדה (SFX): `DomfiJ7pcl`
