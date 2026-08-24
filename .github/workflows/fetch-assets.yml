@@ -1,17 +1,11 @@
 name: fetch-assets
 
 on:
-  workflow_dispatch:
-    inputs:
-      manifest:
-        description: 'JSON array of {"url":"...","name":"..."} objects to download'
-        required: true
-        type: string
-      dest:
-        description: 'Destination directory inside the repo'
-        required: false
-        default: 'marketing/savings-video/incoming'
-        type: string
+  push:
+    branches:
+      - claude/financial-savings-marketing-video-prh9oc
+    paths:
+      - marketing/savings-video/fetch-manifest.json
 
 permissions:
   contents: write
@@ -21,15 +15,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref_name }}
       - name: Download files
-        env:
-          MANIFEST: ${{ inputs.manifest }}
-          DEST: ${{ inputs.dest }}
         run: |
+          MANIFEST=marketing/savings-video/fetch-manifest.json
+          DEST=$(jq -r '.dest // "marketing/savings-video/incoming"' "$MANIFEST")
           mkdir -p "$DEST"
-          echo "$MANIFEST" | jq -c '.[]' | while read -r item; do
+          jq -c '.files[]' "$MANIFEST" | while read -r item; do
             url=$(echo "$item" | jq -r '.url')
             name=$(echo "$item" | jq -r '.name')
             echo "Fetching $name"
@@ -42,4 +33,5 @@ jobs:
           git config user.email "actions@github.com"
           git add -A
           git commit -m "Fetch generated assets" || echo "nothing to commit"
+          git pull --rebase origin ${{ github.ref_name }} || true
           git push
