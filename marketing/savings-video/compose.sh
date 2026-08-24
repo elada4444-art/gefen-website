@@ -73,7 +73,24 @@ ffmpeg -y -i "$WORK/b1.mp4" -i "$WORK/b2.mp4" -i "$WORK/b3.mp4" -i "$WORK/b4.mp4
  [a1][2:a]acrossfade=d=${XF}[a2];\
  [a2][3:a]acrossfade=d=${XF}[a3];\
  [a3][4:a]acrossfade=d=${XF}[a]" \
- -map "[v]" -map "[a]" -c:v libx264 -preset "$PRESET" -crf 19 -pix_fmt yuv420p -c:a aac -ar 48000 -b:a 160k -movflags +faststart "$OUT"
+ -map "[v]" -map "[a]" -c:v libx264 -preset "$PRESET" -crf 19 -pix_fmt yuv420p -c:a aac -ar 48000 -b:a 160k -movflags +faststart "$WORK/base.mp4"
+
+# The per-clip audio Seedance returns is uneven (some clips are near-silent), so lay a
+# continuous, normalized restaurant-ambience bed under the whole video with a gentle fade-out.
+AMB="${CLIPS}/ambience.mp3"
+if [ -f "$AMB" ]; then
+  echo "== mix restaurant ambience bed =="
+  TOT=$(dur "$WORK/base.mp4"); FO=$(awk -v d="$TOT" 'BEGIN{printf "%.2f", d-1.2}')
+  ffmpeg -y -i "$WORK/base.mp4" -stream_loop -1 -i "$AMB" -filter_complex \
+    "[1:a]atrim=0:${TOT},asetpts=PTS-STARTPTS,loudnorm=I=-19:TP=-1.5:LRA=11,afade=t=out:st=${FO}:d=1.2[amb];\
+     [0:a]volume=0.7[clip];\
+     [clip][amb]amix=inputs=2:duration=first:normalize=0[mix];\
+     [mix]loudnorm=I=-16:TP=-1.5[a]" \
+    -map 0:v -map "[a]" -c:v copy -c:a aac -ar 48000 -ac 2 -b:a 160k -movflags +faststart "$OUT"
+else
+  echo "== no ambience bed found ($AMB); keeping clip audio =="
+  cp "$WORK/base.mp4" "$OUT"
+fi
 
 echo "done: $OUT"
 ffprobe -v error -show_entries format=duration:stream=width,height,codec_type -of default=noprint_wrappers=1 "$OUT"
