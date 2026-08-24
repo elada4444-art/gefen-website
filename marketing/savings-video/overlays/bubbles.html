@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: transparent; }
+  body { font-family: 'Heebo', sans-serif; display: flex; justify-content: center; padding: 40px; }
+  .card {
+    position: relative;
+    max-width: 880px;
+    background: rgba(247, 244, 238, 0.97); /* cream */
+    border-radius: 36px;
+    padding: 38px 54px 42px;
+    box-shadow: 0 14px 40px rgba(0,0,0,0.45);
+    text-align: center;
+  }
+  .card::after { /* tail pointing down */
+    content: '';
+    position: absolute;
+    bottom: -26px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 28px solid transparent;
+    border-top-color: rgba(247, 244, 238, 0.97);
+    border-bottom: 0;
+  }
+  .card.tail-right::after { left: 72%; }
+  .card.tail-left::after { left: 28%; }
+  .line { color: #1c2a4a; font-size: 56px; font-weight: 600; line-height: 1.25; }
+  .amount { color: #f07d1a; font-size: 104px; font-weight: 900; line-height: 1.15; letter-spacing: 1px; }
+  .amount bdi { unicode-bidi: isolate; direction: ltr; }
+  .note {
+    margin-top: 18px;
+    color: #d94f2b;
+    font-size: 42px;
+    font-weight: 800;
+  }
+  .small { font-size: 44px; font-weight: 400; }
+</style>
+</head>
+<body>
+  <!-- one card is shown at a time via ?id= -->
+  <div class="card" id="amit" style="display:none">
+    <div class="line">פוליסת החיסכון שלי עשתה השנה</div>
+    <div class="amount"><bdi>+137,000 ₪</bdi></div>
+  </div>
+
+  <div class="card" id="michal" style="display:none">
+    <div class="line">שלי?</div>
+    <div class="amount"><bdi>+182,000 ₪</bdi></div>
+  </div>
+
+  <div class="card" id="noam" style="display:none">
+    <div class="amount"><bdi>+154,000 ₪</bdi></div>
+    <div class="line small">ועוד לא נגמרה השנה…</div>
+  </div>
+
+  <div class="card" id="dan" style="display:none">
+    <div class="line">אה… גם שלי עשתה יפה…</div>
+  </div>
+
+  <div class="card" id="dan-truth" style="display:none">
+    <div class="note">האמת? הכסף שלו עדיין יושב בעו״ש 🙈</div>
+  </div>
+
+<script>
+  const id = new URLSearchParams(location.search).get('id');
+  const el = document.getElementById(id);
+  if (el) { el.style.display = 'block'; el.classList.add(...(new URLSearchParams(location.search).get('tail') || '').split(' ').filter(Boolean)); }
+</script>
+</body>
+</html>
