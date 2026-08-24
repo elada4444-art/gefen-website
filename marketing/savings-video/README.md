@@ -14,15 +14,18 @@
 | האישה בבורדו (נועם) | **+154,000 ₪** — ועוד לא נגמרה השנה… |
 | הגבר הימני (דן) | "אה… גם שלי עשתה יפה…" + הכיתוב: *האמת? הכסף שלו עדיין יושב בעו"ש* 🙈 |
 
-מסתיים בשקופית ממותגת: לוגו גפן, "אל תשאירו את הכסף בעו"ש", וקריאה לפעולה (03-5727277 / WhatsApp).
+- **כיתוב פתיחה** (5 שניות ראשונות, שמאל-למעלה, הנפשת כתיבה + fade out): „שיחה נפוצה בין חברים בשנת 2026…"
+- **דיסקליימר קבוע** (כל אורך הסרטון, ימין-למטה): „* האמור אינו מהווה ייעוץ השקעות, יש לפנות לייעוץ אישי"
+- מסתיים בשקופית ממותגת: לוגו גפן, "אל תשאירו את הכסף בעו"ש", וקריאה לפעולה (03-5727277 / WhatsApp).
 
 ## איך זה נבנה
 - **וידאו:** נוצר ב-Magnific עם המודל `bytedance-seedance-pro-2.0` (image-to-video),
   מתוך פריים מאסטר אחד (שוט קבוצתי במסעדה) — כך הדמויות עקביות בין הקליפים.
   קליפ 1 ב-1080p, קליפים 2-4 ב-720p, כולם 9:16.
 - **טקסטים בעברית:** לא רונדרו על ידי מודל הווידאו (עברית יוצאת שבורה) אלא **נצרבו מקומית**:
-  `overlays/bubbles.html` + `overlays/endcard.html` מרונדרים ל-PNG שקופים עם Playwright + Chromium
-  ופונט המותג **Heebo**, ואז נצרבים על הווידאו עם ffmpeg (`compose.sh`).
+  `overlays/bubbles.html` (הבועות), `overlays/endcard.html` (שקופית הסיום) ו-`overlays/extras.html`
+  (כיתוב הפתיחה + הדיסקליימר) מרונדרים ל-PNG שקופים עם Playwright + Chromium ופונט המותג **Heebo**,
+  ואז נצרבים על הווידאו עם ffmpeg (`compose.sh`). כיתוב הפתיחה מרונדר כרצף פריימים (typewriter).
 - **סאונד:** הסאונד שמודל הווידאו מחזיר לכל קליפ לא אחיד (חלק מהקליפים כמעט שקטים), לכן
   יוצר **פס אווירת מסעדה רציף** (`incoming/ambience.mp3`, נוצר ב-Magnific SFX) שמנורמל ומעורבב
   מתחת לכל הסרטון ברמה קבועה ונשמעת, עם fade-out בסיום. אין מוזיקה — רק אווירה.
@@ -32,11 +35,13 @@
 ```
 marketing/savings-video/
 ├── README.md                 ← המסמך הזה
-├── compose.sh                ← צריבת טקסטים + חיבור + מיזוג אווירה (ffmpeg)
+├── compose.sh                ← צריבת טקסטים + חיבור + מיזוג אווירה + כיתוב/דיסקליימר (ffmpeg)
 ├── overlays/
 │   ├── bubbles.html          ← 5 בועות הטקסט בעברית (RTL, Heebo)
 │   ├── endcard.html          ← שקופית הסיום הממותגת
-│   └── render.js             ← מרנדר את ה-HTML ל-PNG שקופים (Playwright)
+│   ├── extras.html           ← כיתוב הפתיחה + הדיסקליימר
+│   ├── render.js             ← מרנדר bubbles/endcard ל-PNG שקופים
+│   └── render-extras.js      ← מרנדר את הדיסקליימר ואת פריימי הכתיבה של כיתוב הפתיחה
 └── incoming/                 ← קלטים גולמיים מ-Magnific
     ├── clip1-4.mp4           ← הקליפים
     └── ambience.mp3          ← פס אווירת המסעדה
@@ -48,7 +53,8 @@ marketing/savings-video/
 דרישות: `ffmpeg`, `node` + `playwright-core`, Chromium, ופונט Heebo מותקן.
 ```bash
 cd marketing/savings-video
-node overlays/render.js                 # יוצר overlays/*.png
+node overlays/render.js                 # יוצר overlays/*.png (בועות + endcard)
+node overlays/render-extras.js          # יוצר overlays/extras/*.png (כיתוב פתיחה + דיסקליימר)
 # (רנדרו גם endcard.html ל-overlays/endcard.png, 1080x1920)
 ./compose.sh incoming overlays gefen-savings-video.mp4
 ```
