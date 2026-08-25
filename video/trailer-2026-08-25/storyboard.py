@@ -46,7 +46,7 @@ EDL = [
 
     dict(kind="card", dur=1.4, style="slam", lines=["ג׳קסון הול"]),
 
-    dict(kind="shot", src="podium", start=0.5, dur=6.0, beats=[
+    dict(kind="shot", src="podium", start=0.0, dur=6.0, beats=[
         dict(t0=0.5, t1=5.7, style="line",
              lines=["ביום שישי נושא קווין וורש", "את נאומו הראשון כנגיד הפד"]),
     ]),

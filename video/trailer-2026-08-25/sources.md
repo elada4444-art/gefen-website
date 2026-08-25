@@ -17,3 +17,8 @@ this was cut, and licensed stock suits a trailer better anyway.
 
 Download URLs are signed per account and expire within hours, so they are
 passed to the build at run time rather than committed.
+
+Source lengths constrain the cut: `podium` runs exactly 6.000s, so its
+segment starts at 0.0 rather than part-way in. `build.py` will silently
+produce a short segment if a segment asks for more than its source holds —
+check `start + dur` against the clip length when re-timing.
