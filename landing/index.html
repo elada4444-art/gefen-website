@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>גפן ביטוח ופיננסים | דברו איתנו — נחזור אליכם</title>
+<meta name="description" content="השאירו שם וטלפון, בחרו מתי נוח לכם — ואנחנו חוזרים אליכם עם ליווי פיננסי אישי. גפן סוכנויות לביטוח ופיננסים.">
+<meta name="theme-color" content="#12308f">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23ffffff'/%3E%3Ctext x='50' y='74' font-size='64' font-family='Arial,sans-serif' font-weight='bold' text-anchor='middle' fill='%23f07d1a'%3E%D7%92%3C/text%3E%3C/svg%3E">
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="גפן סוכנויות לביטוח ופיננסים">
+<meta property="og:title" content="גפן ביטוח ופיננסים — דברו איתנו">
+<meta property="og:description" content="השאירו פרטים ונחזור אליכם בשעה שנוחה לכם. ליווי פיננסי אישי, בגובה העיניים.">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/elada4444-art/gefen-website@main/assets/og.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&family=Secular+One&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --blue:#12308f;
+  --blue-deep:#0c2268;
+  --blue-ink:#101f4a;
+  --orange:#f07d1a;
+  --orange-hot:#ff9636;
+  --cream:#fdf8f2;
+  --pink:#f6e6ef;
+  --mint:#dff0e8;
+  --card:#ffffff;
+  --ring:rgba(240,125,26,.35);
+  --shadow:0 18px 50px -18px rgba(16,31,74,.28);
+  --r-lg:28px;
+  --r-md:20px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+html,body{overflow-x:clip}
+body{
+  font-family:'Rubik','Heebo','Segoe UI',Arial,sans-serif;
+  color:var(--blue-ink);
+  background:var(--cream);
+  overflow-x:hidden;
+  min-height:100vh;
+}
+h1,h2,.display{font-family:'Secular One','Rubik',sans-serif;font-weight:400;letter-spacing:.2px}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+
+/* ---------- animated background ---------- */
+.bg{position:fixed;inset:0;z-index:-2;overflow:hidden;background:
+  radial-gradient(1200px 800px at 85% -10%, #ffe9d4 0%, transparent 55%),
+  radial-gradient(1000px 700px at -10% 110%, #dfe7ff 0%, transparent 55%),
+  var(--cream);}
+.blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;will-change:transform}
+.blob.b1{width:44vmax;height:44vmax;background:#ffd9ae;top:-18vmax;inset-inline-start:-10vmax;animation:drift1 22s ease-in-out infinite alternate}
+.blob.b2{width:36vmax;height:36vmax;background:#c9d6ff;bottom:-14vmax;inset-inline-end:-8vmax;animation:drift2 26s ease-in-out infinite alternate}
+.blob.b3{width:22vmax;height:22vmax;background:#ffd2e6;top:40%;inset-inline-start:55%;opacity:.4;animation:drift3 30s ease-in-out infinite alternate}
+@keyframes drift1{to{transform:translate(8vmax,6vmax) scale(1.12)}}
+@keyframes drift2{to{transform:translate(-6vmax,-8vmax) scale(1.08) rotate(20deg)}}
+@keyframes drift3{to{transform:translate(-10vmax,4vmax) scale(.9)}}
+.sparkles{position:fixed;inset:0;z-index:-1;pointer-events:none}
+.sparkles i{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--orange);opacity:0;animation:tw 6s linear infinite}
+@keyframes tw{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:.5;transform:scale(1)}}
+
+/* ---------- zones: hover + press on every area ---------- */
+.zone{transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s,filter .35s}
+.zone:hover{transform:translateY(-4px)}
+.zone:active{transform:translateY(-1px) scale(.995);transition-duration:.08s}
+
+/* ---------- ripple (click effect everywhere) ---------- */
+.ripple{position:fixed;border-radius:50%;pointer-events:none;z-index:9999;
+  background:radial-gradient(circle,rgba(240,125,26,.45) 0%,rgba(240,125,26,0) 65%);
+  transform:translate(-50%,-50%) scale(0);animation:rip .55s ease-out forwards}
+@keyframes rip{to{transform:translate(-50%,-50%) scale(1);opacity:0}}
+
+/* ---------- header ---------- */
+header{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:12px clamp(16px,4vw,42px);
+  background:rgba(253,248,242,.75);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(16,31,74,.08);
+}
+.logo-wrap{display:inline-flex;align-items:center;border-radius:14px;padding:6px 10px;transition:transform .3s,background .3s}
+.logo-wrap:hover{transform:scale(1.05) rotate(-1.5deg);background:#fff}
+.logo-wrap:active{transform:scale(.97)}
+.logo-wrap img{height:clamp(34px,5vw,46px);width:auto}
+.header-cta{display:flex;gap:10px;align-items:center}
+.pill{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 18px;border-radius:999px;font-weight:600;font-size:.95rem;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .25s,background .25s,color .25s;
+  position:relative;overflow:hidden;
+}
+.pill:hover{transform:translateY(-3px) scale(1.04)}
+.pill:active{transform:translateY(0) scale(.96)}
+.pill-phone{background:#fff;color:var(--blue);border:2px solid var(--blue);box-shadow:0 6px 18px -8px rgba(18,48,143,.4)}
+.pill-phone:hover{background:var(--blue);color:#fff;box-shadow:0 12px 26px -10px rgba(18,48,143,.55)}
+.pill-wa{background:#25d366;color:#fff;box-shadow:0 6px 18px -8px rgba(37,211,102,.55)}
+.pill-wa:hover{box-shadow:0 14px 30px -10px rgba(37,211,102,.65);filter:saturate(1.15)}
+@media(max-width:560px){.pill span.t{display:none}.pill{padding:10px 13px}}
+
+/* ---------- hero ---------- */
+.hero{
+  max-width:1180px;margin:0 auto;
+  padding:clamp(24px,5vw,64px) clamp(16px,4vw,42px) clamp(40px,6vw,80px);
+  display:grid;grid-template-columns:1fr 1.05fr;gap:clamp(24px,4vw,56px);
+  align-items:center;
+}
+@media(max-width:920px){.hero{grid-template-columns:1fr}}
+
+/* photo card */
+.photo-side{display:flex;justify-content:center;perspective:900px}
+.photo-card{
+  position:relative;width:min(400px,86vw);border-radius:34px;
+  transform-style:preserve-3d;transition:transform .5s cubic-bezier(.22,1,.36,1);
+  animation:float-in 1s cubic-bezier(.22,1,.36,1) both;
+}
+.photo-card:active{transform:scale(.985)!important}
+@keyframes float-in{from{opacity:0;transform:translateY(46px) rotate(-3deg)}to{opacity:1}}
+.photo-card::before{
+  content:"";position:absolute;inset:-14px;border-radius:44px;z-index:-1;
+  background:conic-gradient(from 180deg,var(--orange),#ffb45e,var(--blue),#7d9bff,var(--orange));
+  filter:blur(22px);opacity:.5;animation:spin-glow 9s linear infinite;
+}
+@keyframes spin-glow{to{transform:rotate(1turn)}}
+.photo-card img{
+  border-radius:34px;box-shadow:var(--shadow);border:6px solid #fff;
+  width:100%;height:clamp(380px,62vh,560px);object-fit:cover;object-position:center 18%;
+}
+.badge-float{
+  position:absolute;background:#fff;border-radius:18px;padding:10px 16px;
+  box-shadow:0 14px 34px -12px rgba(16,31,74,.35);
+  display:flex;align-items:center;gap:9px;font-weight:700;font-size:.92rem;
+  animation:bob 4s ease-in-out infinite;cursor:default;
+  transition:transform .3s,box-shadow .3s;
+}
+.badge-float:hover{transform:scale(1.12) rotate(2deg);box-shadow:0 20px 44px -12px rgba(16,31,74,.45)}
+.badge-float:active{transform:scale(.95)}
+.badge-float .ico{font-size:1.25rem}
+.bf1{top:9%;inset-inline-end:-6%;animation-delay:.2s}
+.bf2{bottom:20%;inset-inline-start:-8%;animation-delay:1.4s}
+.bf3{bottom:-4%;inset-inline-end:6%;animation-delay:2.6s;background:var(--blue);color:#fff}
+@keyframes bob{0%,100%{translate:0 0}50%{translate:0 -12px}}
+@media(max-width:920px){
+  .bf1{inset-inline-end:0}.bf2{inset-inline-start:0}
+}
+
+/* form side */
+.form-side{animation:float-in 1s .15s cubic-bezier(.22,1,.36,1) both}
+.kicker{
+  display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--orange);
+  font-weight:800;padding:8px 16px;border-radius:999px;font-size:.9rem;
+  box-shadow:0 8px 22px -10px rgba(240,125,26,.5);margin-bottom:16px;
+  transition:transform .3s;cursor:default;
+}
+.kicker:hover{transform:scale(1.06) rotate(-1deg)}
+.kicker .dot{width:9px;height:9px;border-radius:50%;background:var(--orange);animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.7);opacity:.5}}
+h1{
+  font-size:clamp(2rem,4.6vw,3.3rem);line-height:1.16;color:var(--blue-ink);
+  margin-bottom:12px;
+}
+h1 .hl{
+  color:var(--orange);position:relative;display:inline-block;white-space:nowrap;
+}
+h1 .hl::after{
+  content:"";position:absolute;inset-inline:0;bottom:4px;height:.34em;z-index:-1;
+  background:linear-gradient(90deg,#ffe0bc,#ffd0a0);border-radius:6px;
+  transform:scaleX(0);transform-origin:right;animation:underline-in 1s .7s cubic-bezier(.22,1,.36,1) forwards;
+}
+@keyframes underline-in{to{transform:scaleX(1)}}
+.sub{font-size:clamp(1.02rem,1.6vw,1.2rem);color:#4a5578;max-width:46ch;margin-bottom:26px;font-weight:400}
+
+/* ---------- the form card ---------- */
+.form-card{
+  background:var(--card);border-radius:var(--r-lg);
+  padding:clamp(20px,3vw,32px);
+  box-shadow:var(--shadow);
+  border:1px solid rgba(16,31,74,.06);
+  position:relative;overflow:hidden;
+}
+.form-card:hover{box-shadow:0 26px 70px -20px rgba(16,31,74,.38)}
+.form-card::before{
+  content:"";position:absolute;top:0;inset-inline:0;height:6px;
+  background:linear-gradient(90deg,var(--orange),#ffb45e,var(--blue),var(--orange));
+  background-size:300% 100%;animation:slide-grad 5s linear infinite;
+}
+@keyframes slide-grad{to{background-position:300% 0}}
+.form-title{font-size:1.35rem;margin-bottom:4px;color:var(--blue)}
+.form-sub{color:#67719a;font-size:.95rem;margin-bottom:20px}
+.field{position:relative;margin-bottom:18px}
+.field input{
+  width:100%;padding:11px 46px 11px 14px;font-size:1.05rem;font-family:inherit;
+  border:2px solid #e3e6f2;border-radius:16px;background:#fbfcff;color:var(--blue-ink);
+  transition:border-color .25s,box-shadow .25s,transform .25s,background .25s;outline:none;
+}
+.field input:hover{border-color:#bcC6ea;transform:translateY(-2px);background:#fff}
+.field input:focus{border-color:var(--orange);box-shadow:0 0 0 5px var(--ring);background:#fff;transform:translateY(-2px)}
+.field label{
+  position:absolute;top:13px;inset-inline-start:46px;color:#8b93b5;font-size:1.02rem;
+  pointer-events:none;transition:all .22s cubic-bezier(.22,1,.36,1);
+  background:transparent;padding:0 6px;
+}
+.field input:focus + label,
+.field input:not(:placeholder-shown) + label{
+  top:-11px;inset-inline-start:14px;font-size:.8rem;color:var(--orange);font-weight:700;background:#fff;border-radius:8px;
+}
+.field .fico{
+  position:absolute;top:50%;transform:translateY(-50%);inset-inline-start:14px;
+  font-size:1.15rem;transition:transform .3s;
+}
+.field:hover .fico{transform:translateY(-50%) scale(1.25) rotate(-8deg)}
+.field .err{
+  display:none;color:#d43c3c;font-size:.83rem;font-weight:600;margin:6px 6px 0;
+}
+.field.bad input{border-color:#d43c3c;box-shadow:0 0 0 4px rgba(212,60,60,.15);animation:shake .4s}
+.field.bad .err{display:block}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+
+/* when-to-call selector */
+.when-label{font-weight:700;margin-bottom:10px;font-size:1.02rem;display:flex;align-items:center;gap:8px}
+.when-label .req{color:var(--orange)}
+.when{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:6px}
+.when input{position:absolute;opacity:0;pointer-events:none}
+.when .opt{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:13px 6px 11px;border-radius:18px;border:2px solid #e3e6f2;background:#fbfcff;
+  font-weight:700;font-size:.98rem;cursor:pointer;user-select:none;
+  transition:all .28s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden;
+}
+.when .opt .emoji{font-size:1.5rem;transition:transform .35s cubic-bezier(.34,1.56,.64,1)}
+.when .opt:hover{transform:translateY(-4px) scale(1.04);border-color:#bcc6ea;background:#fff;box-shadow:0 12px 24px -12px rgba(16,31,74,.3)}
+.when .opt:hover .emoji{transform:scale(1.3) rotate(10deg)}
+.when .opt:active{transform:scale(.94)}
+.when input:checked + .opt{
+  border-color:var(--orange);background:linear-gradient(160deg,#fff4e8,#ffe8d1);
+  color:#b35a08;box-shadow:0 10px 26px -10px rgba(240,125,26,.55);
+  transform:translateY(-3px);
+}
+.when input:checked + .opt .emoji{transform:scale(1.35)}
+.when input:focus-visible + .opt{box-shadow:0 0 0 4px var(--ring)}
+.when-err{display:none;color:#d43c3c;font-size:.83rem;font-weight:600;margin:6px 4px 0}
+.when-wrap.bad .when-err{display:block}
+.when-wrap.bad .opt{border-color:#d43c3c;animation:shake .4s}
+
+/* submit */
+.submit{
+  width:100%;margin-top:20px;padding:16px;border-radius:18px;
+  background:linear-gradient(135deg,var(--orange),var(--orange-hot));
+  color:#fff;font-size:1.2rem;font-weight:800;letter-spacing:.3px;
+  box-shadow:0 14px 34px -10px rgba(240,125,26,.6);
+  position:relative;overflow:hidden;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .3s,filter .3s;
+}
+.submit:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 20px 44px -12px rgba(240,125,26,.72);filter:brightness(1.05)}
+.submit:active{transform:translateY(0) scale(.97)}
+.submit::after{
+  content:"";position:absolute;top:0;bottom:0;width:40%;inset-inline-start:-60%;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.5),transparent);
+  transform:skewX(-20deg);animation:shine 3.2s ease-in-out infinite;
+}
+@keyframes shine{0%{inset-inline-start:-60%}60%,100%{inset-inline-start:130%}}
+.privacy{margin-top:12px;text-align:center;font-size:.8rem;color:#8b93b5}
+
+/* success state */
+.success{
+  display:none;text-align:center;padding:30px 10px;
+}
+.form-card.sent form{display:none}
+.form-card.sent .success{display:block;animation:pop-in .6s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop-in{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+.success .check{
+  width:86px;height:86px;margin:0 auto 16px;border-radius:50%;
+  background:linear-gradient(140deg,#2ec06b,#25d366);display:grid;place-items:center;
+  color:#fff;font-size:2.6rem;box-shadow:0 16px 40px -12px rgba(46,192,107,.6);
+  animation:bob 3s ease-in-out infinite;
+}
+.success h3{font-family:'Secular One';font-size:1.5rem;color:var(--blue);margin-bottom:8px}
+.success p{color:#4a5578;margin-bottom:18px}
+.success .pill-wa{font-size:1.05rem;padding:13px 24px}
+
+/* ---------- marquee ---------- */
+.marquee{
+  background:var(--blue);color:#fff;overflow:hidden;padding:14px 0;
+  transform:rotate(-1.2deg) scale(1.02);margin:6px -10px 6px;
+  box-shadow:0 14px 40px -18px rgba(18,48,143,.55);
+  transition:transform .4s,box-shadow .4s;
+}
+.marquee:hover{transform:rotate(0deg) scale(1.02);box-shadow:0 20px 50px -18px rgba(18,48,143,.7)}
+.marquee .track{display:flex;gap:38px;width:max-content;animation:scroll 26s linear infinite;font-weight:600;font-size:1.02rem;white-space:nowrap}
+.marquee:hover .track{animation-play-state:paused}
+.marquee .track span{display:flex;align-items:center;gap:10px}
+.marquee .track b{color:var(--orange-hot)}
+@keyframes scroll{to{transform:translateX(50%)}}
+
+/* ---------- features ---------- */
+.features{max-width:1180px;margin:0 auto;padding:clamp(40px,6vw,80px) clamp(16px,4vw,42px)}
+.features h2{font-size:clamp(1.6rem,3vw,2.3rem);text-align:center;color:var(--blue);margin-bottom:8px}
+.features .lead{text-align:center;color:#4a5578;margin-bottom:36px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
+.card{
+  background:#fff;border-radius:var(--r-md);padding:26px 22px;text-align:center;
+  border:1px solid rgba(16,31,74,.07);box-shadow:0 10px 30px -18px rgba(16,31,74,.25);
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1),box-shadow .35s,border-color .35s;
+  cursor:default;position:relative;overflow:hidden;
+}
+.card:hover{transform:translateY(-8px) rotate(-.6deg);box-shadow:0 24px 54px -18px rgba(16,31,74,.4);border-color:var(--orange)}
+.card:active{transform:translateY(-3px) scale(.97)}
+.card .ico{
+  width:62px;height:62px;margin:0 auto 14px;border-radius:20px;display:grid;place-items:center;
+  font-size:1.8rem;background:linear-gradient(150deg,#fff1e2,#ffe3c4);
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+}
+.card:hover .ico{transform:scale(1.18) rotate(-8deg)}
+.card h3{font-size:1.12rem;color:var(--blue);margin-bottom:6px;font-weight:700}
+.card p{font-size:.93rem;color:#5b6488;line-height:1.55}
+
+/* ---------- bottom cta ---------- */
+.bottom-cta{
+  max-width:900px;margin:0 auto clamp(50px,7vw,90px);
+  padding:clamp(28px,4vw,46px);border-radius:var(--r-lg);text-align:center;
+  background:linear-gradient(140deg,var(--blue),var(--blue-deep));color:#fff;
+  box-shadow:0 26px 70px -24px rgba(18,48,143,.65);
+  position:relative;overflow:hidden;margin-inline:clamp(16px,4vw,auto);
+}
+@media(min-width:960px){.bottom-cta{margin-inline:auto}}
+.bottom-cta::before{
+  content:"";position:absolute;width:340px;height:340px;border-radius:50%;
+  background:radial-gradient(circle,rgba(240,125,26,.5),transparent 65%);
+  top:-160px;inset-inline-end:-100px;animation:bob 7s ease-in-out infinite;
+}
+.bottom-cta h2{font-size:clamp(1.5rem,3vw,2.2rem);margin-bottom:10px;position:relative}
+.bottom-cta p{opacity:.85;margin-bottom:22px;position:relative}
+.btn-up{
+  display:inline-flex;align-items:center;gap:10px;
+  background:linear-gradient(135deg,var(--orange),var(--orange-hot));color:#fff;
+  font-weight:800;font-size:1.15rem;padding:15px 32px;border-radius:999px;
+  box-shadow:0 16px 38px -10px rgba(240,125,26,.7);position:relative;overflow:hidden;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .3s;
+}
+.btn-up:hover{transform:translateY(-4px) scale(1.05);box-shadow:0 24px 50px -12px rgba(240,125,26,.85)}
+.btn-up:active{transform:scale(.95)}
+
+/* ---------- footer ---------- */
+footer{
+  background:#fff;border-top:1px solid rgba(16,31,74,.08);
+  padding:26px clamp(16px,4vw,42px);display:flex;flex-wrap:wrap;gap:16px;
+  align-items:center;justify-content:space-between;
+}
+footer .fl{display:flex;align-items:center;gap:14px}
+footer img{height:38px;transition:transform .3s}
+footer img:hover{transform:scale(1.08)}
+footer .links{display:flex;gap:18px;font-size:.92rem;color:#4a5578;flex-wrap:wrap}
+footer .links a{position:relative;padding:4px 2px;transition:color .25s}
+footer .links a::after{content:"";position:absolute;bottom:0;inset-inline:0;height:2px;background:var(--orange);border-radius:2px;transform:scaleX(0);transition:transform .3s}
+footer .links a:hover{color:var(--orange)}
+footer .links a:hover::after{transform:scaleX(1)}
+footer .links a:active{transform:translateY(1px)}
+footer small{color:#8b93b5}
+
+/* floating whatsapp */
+.fab{
+  position:fixed;bottom:22px;inset-inline-start:22px;z-index:60;
+  width:58px;height:58px;border-radius:50%;background:#25d366;color:#fff;
+  display:grid;place-items:center;font-size:1.7rem;
+  box-shadow:0 14px 34px -8px rgba(37,211,102,.65);
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1),box-shadow .3s;
+  animation:bob 4.5s ease-in-out infinite;
+}
+.fab:hover{transform:scale(1.16) rotate(8deg);box-shadow:0 20px 44px -8px rgba(37,211,102,.8)}
+.fab:active{transform:scale(.9)}
+
+/* scroll reveal */
+.reveal{opacity:0;transform:translateY(34px);transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* confetti canvas */
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:9998}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<div class="bg" aria-hidden="true">
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+</div>
+<div class="sparkles" aria-hidden="true"></div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<header>
+  <a class="logo-wrap" href="/" aria-label="גפן ביטוח ופיננסים — דף הבית">
+    <img src="/assets/logo-transparent.png" alt="גפן ביטוח ופיננסים">
+  </a>
+  <div class="header-cta">
+    <a class="pill pill-phone" href="tel:+97235727277">📞 <span class="t">03-5727277</span></a>
+    <a class="pill pill-wa" href="https://wa.me/97235727277?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A7%D7%91%D7%9C%20%D7%9C%D7%99%D7%95%D7%95%D7%99%20%D7%A4%D7%99%D7%A0%D7%A0%D7%A1%D7%99" target="_blank" rel="noopener">💬 <span class="t">וואטסאפ</span></a>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="form-side">
+      <span class="kicker zone"><span class="dot"></span> מקום פנוי השבוע לשיחת ייעוץ</span>
+      <h1>הכסף שלך יכול לעבוד <span class="hl">הרבה יותר קשה.</span><br>בוא נדבר על זה.</h1>
+      <p class="sub">פנסיה, ביטוח, חיסכון ומשכנתא — בלי אותיות קטנות ובלי כאב ראש. משאירים פרטים, ואנחנו חוזרים אליך בדיוק בשעה שנוחה לך.</p>
+
+      <div class="form-card zone" id="formCard">
+        <form id="leadForm" novalidate>
+          <div class="form-title display">נשמח להכיר 👋</div>
+          <div class="form-sub">30 שניות ואנחנו אצלך בטלפון</div>
+
+          <div class="field" id="fName">
+            <span class="fico" aria-hidden="true">🙂</span>
+            <input type="text" id="name" name="name" placeholder=" " autocomplete="name" required>
+            <label for="name">שם מלא *</label>
+            <div class="err">נשמח לדעת איך קוראים לך 🙂</div>
+          </div>
+
+          <div class="field" id="fPhone">
+            <span class="fico" aria-hidden="true">📱</span>
+            <input type="tel" id="phone" name="phone" placeholder=" " inputmode="tel" autocomplete="tel" required>
+            <label for="phone">טלפון נייד *</label>
+            <div class="err">מספר טלפון ישראלי תקין, למשל 050-1234567</div>
+          </div>
+
+          <div class="when-wrap" id="whenWrap">
+            <div class="when-label">מתי נוח לך שנתקשר? <span class="req">*</span></div>
+            <div class="when" role="radiogroup" aria-label="מתי נוח לך שנתקשר?">
+              <input type="radio" name="when" id="w1" value="בוקר">
+              <label class="opt" for="w1"><span class="emoji">🌅</span>בוקר</label>
+              <input type="radio" name="when" id="w2" value="צהריים">
+              <label class="opt" for="w2"><span class="emoji">☀️</span>צהריים</label>
+              <input type="radio" name="when" id="w3" value="ערב">
+              <label class="opt" for="w3"><span class="emoji">🌙</span>ערב</label>
+            </div>
+            <div class="when-err">רק תבחרו מתי נוח — בוקר, צהריים או ערב</div>
+          </div>
+
+          <button type="submit" class="submit">שיחזרו אליי 🚀</button>
+          <div class="privacy">🔒 הפרטים שלך שמורים אצלנו בלבד ולא יועברו לאף גורם אחר</div>
+        </form>
+
+        <div class="success" id="successBox">
+          <div class="check">✓</div>
+          <h3>הפרטים נקלטו!</h3>
+          <p id="successMsg">נתקשר אליך בשעה שבחרת. רוצה לזרז? שלח לנו עכשיו וואטסאפ:</p>
+          <a class="pill pill-wa" id="waLead" href="#" target="_blank" rel="noopener">💬 שליחה בוואטסאפ</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="photo-side">
+      <div class="photo-card zone" id="tilt">
+        <img src="/assets/landing-hero.webp" alt="יועצת של גפן ביטוח ופיננסים מדברת אליך" width="900" height="1654" fetchpriority="high">
+        <div class="badge-float bf1"><span class="ico">🛡️</span> ליווי אישי</div>
+        <div class="badge-float bf2"><span class="ico">📈</span> +20 שנות ניסיון</div>
+        <div class="badge-float bf3"><span class="ico">⭐</span> אלפי לקוחות מרוצים</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="marquee zone" aria-hidden="true">
+    <div class="track">
+      <span>🏦 פנסיה ותכנון פרישה <b>✦</b></span>
+      <span>🏥 ביטוח בריאות וחיים <b>✦</b></span>
+      <span>🚗 ביטוח רכב ורכוש <b>✦</b></span>
+      <span>🏠 משכנתא <b>✦</b></span>
+      <span>💰 ניהול חיסכון והשקעות <b>✦</b></span>
+      <span>🧾 בדיקת תיק ביטוח חינם <b>✦</b></span>
+      <span>🏦 פנסיה ותכנון פרישה <b>✦</b></span>
+      <span>🏥 ביטוח בריאות וחיים <b>✦</b></span>
+      <span>🚗 ביטוח רכב ורכוש <b>✦</b></span>
+      <span>🏠 משכנתא <b>✦</b></span>
+      <span>💰 ניהול חיסכון והשקעות <b>✦</b></span>
+      <span>🧾 בדיקת תיק ביטוח חינם <b>✦</b></span>
+    </div>
+  </div>
+
+  <section class="features">
+    <h2 class="reveal">למה דווקא גפן?</h2>
+    <p class="lead reveal">כי כסף זה אישי, ומגיע לך מישהו שבאמת בצד שלך.</p>
+    <div class="cards">
+      <div class="card zone reveal"><div class="ico">🤝</div><h3>בגובה העיניים</h3><p>מסבירים הכל בעברית פשוטה — בלי ז׳רגון, בלי אותיות קטנות ובלי לחץ.</p></div>
+      <div class="card zone reveal"><div class="ico">🎯</div><h3>תפורים עליך</h3><p>לא מוכרים "מוצר מדף". בונים פתרון שמתאים בדיוק לחיים שלך ולתקציב שלך.</p></div>
+      <div class="card zone reveal"><div class="ico">⚡</div><h3>זמינים באמת</h3><p>שאלה באמצע היום? תביעה דחופה? עונים מהר — בטלפון, בוואטסאפ, איך שנוח לך.</p></div>
+      <div class="card zone reveal"><div class="ico">🏆</div><h3>ניסיון שעובד בשבילך</h3><p>עשרות שנות ניסיון מול כל חברות הביטוח ובתי ההשקעות — והידע הזה עובד בשבילך.</p></div>
+    </div>
+  </section>
+
+  <section class="bottom-cta zone reveal">
+    <h2>עוד מתלבט? זה בסדר. <br>שיחה אחת ותדע בדיוק איפה אתה עומד.</h2>
+    <p>בלי התחייבות, בלי מכירות אגרסיביות. רק תמונה ברורה של הכסף שלך.</p>
+    <a class="btn-up" href="#leadForm" id="backToTop">משאיר פרטים עכשיו ⬆️</a>
+  </section>
+</main>
+
+<footer>
+  <div class="fl">
+    <img src="/assets/logo-transparent.png" alt="גפן ביטוח ופיננסים">
+  </div>
+  <div class="links">
+    <a href="tel:+97235727277">📞 03-5727277</a>
+    <a href="https://wa.me/97235727277" target="_blank" rel="noopener">💬 וואטסאפ</a>
+    <a href="/">🌐 לאתר המלא</a>
+  </div>
+  <small>© <span id="yr"></span> גפן סוכנויות לביטוח ופיננסים בע״מ</small>
+</footer>
+
+<a class="fab" href="https://wa.me/97235727277?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A7%D7%91%D7%9C%20%D7%9C%D7%99%D7%95%D7%95%D7%99%20%D7%A4%D7%99%D7%A0%D7%A0%D7%A1%D7%99" target="_blank" rel="noopener" aria-label="שלחו לנו וואטסאפ">💬</a>
+
+<script>
+(function(){
+  "use strict";
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  /* ---- sparkles ---- */
+  var sp = document.querySelector('.sparkles');
+  for (var i=0;i<18;i++){
+    var s=document.createElement('i');
+    s.style.left=(Math.random()*100)+'%';
+    s.style.top=(Math.random()*100)+'%';
+    s.style.animationDelay=(Math.random()*6)+'s';
+    s.style.background=Math.random()>.5?'#f07d1a':'#12308f';
+    sp.appendChild(s);
+  }
+
+  /* ---- click ripple everywhere ---- */
+  document.addEventListener('pointerdown', function(e){
+    var r=document.createElement('span');
+    r.className='ripple';
+    var size=Math.max(90, Math.min(180, window.innerWidth*0.12));
+    r.style.width=r.style.height=size+'px';
+    r.style.left=e.clientX+'px'; r.style.top=e.clientY+'px';
+    document.body.appendChild(r);
+    setTimeout(function(){r.remove();},600);
+  });
+
+  /* ---- 3D tilt on photo ---- */
+  var tilt=document.getElementById('tilt');
+  var fine=window.matchMedia('(pointer:fine)').matches;
+  if (tilt && fine){
+    tilt.addEventListener('mousemove', function(e){
+      var b=tilt.getBoundingClientRect();
+      var x=(e.clientX-b.left)/b.width-0.5, y=(e.clientY-b.top)/b.height-0.5;
+      tilt.style.transform='rotateY('+(x*10)+'deg) rotateX('+(-y*10)+'deg) scale(1.03)';
+    });
+    tilt.addEventListener('mouseleave', function(){ tilt.style.transform=''; });
+  }
+
+  /* ---- scroll reveal ---- */
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target);} });
+  },{threshold:.15});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+  /* ---- smooth scroll back to form ---- */
+  document.getElementById('backToTop').addEventListener('click', function(e){
+    e.preventDefault();
+    document.getElementById('formCard').scrollIntoView({behavior:'smooth', block:'center'});
+    setTimeout(function(){ document.getElementById('name').focus({preventScroll:true}); }, 600);
+  });
+
+  /* ---- form validation + submit ---- */
+  var form=document.getElementById('leadForm');
+  var fName=document.getElementById('fName'), fPhone=document.getElementById('fPhone'), whenWrap=document.getElementById('whenWrap');
+  function validPhone(v){
+    var d=v.replace(/\D/g,'');
+    if(/^972/.test(d)) d='0'+d.slice(3);
+    return /^05\d{8}$/.test(d) || /^07\d{8}$/.test(d) || /^0[23489]\d{7}$/.test(d);
+  }
+
+  ['input','blur'].forEach(function(ev){
+    document.getElementById('name').addEventListener(ev,function(){ if(this.value.trim().length>=2) fName.classList.remove('bad'); });
+    document.getElementById('phone').addEventListener(ev,function(){ if(validPhone(this.value)) fPhone.classList.remove('bad'); });
+  });
+  whenWrap.addEventListener('change', function(){ whenWrap.classList.remove('bad'); });
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var name=document.getElementById('name').value.trim();
+    var phone=document.getElementById('phone').value.trim();
+    var when=(form.querySelector('input[name="when"]:checked')||{}).value;
+    var ok=true;
+
+    fName.classList.remove('bad'); fPhone.classList.remove('bad'); whenWrap.classList.remove('bad');
+    if(name.length<2){ fName.classList.add('bad'); ok=false; }
+    if(!validPhone(phone)){ fPhone.classList.add('bad'); ok=false; }
+    if(!when){ whenWrap.classList.add('bad'); ok=false; }
+    if(!ok){
+      var firstBad=document.querySelector('.bad');
+      if(firstBad) firstBad.scrollIntoView({behavior:'smooth',block:'center'});
+      return;
+    }
+
+    var msg='היי, אשמח שתחזרו אליי 🙂%0A'+
+            'שם: '+encodeURIComponent(name)+'%0A'+
+            'טלפון: '+encodeURIComponent(phone)+'%0A'+
+            'נוח לי שתתקשרו: '+encodeURIComponent(when);
+    document.getElementById('waLead').href='https://wa.me/97235727277?text='+msg;
+    document.getElementById('successMsg').textContent='נתקשר אליך ב'+when+', '+name+'. רוצה לזרז? שלח לנו עכשיו וואטסאפ:';
+
+    document.getElementById('formCard').classList.add('sent');
+    confetti();
+  });
+
+  /* ---- confetti ---- */
+  var canvas=document.getElementById('confetti'), ctx=canvas.getContext('2d'), parts=[], raf;
+  function resize(){ canvas.width=innerWidth; canvas.height=innerHeight; }
+  addEventListener('resize',resize); resize();
+  var colors=['#f07d1a','#ffb45e','#12308f','#7d9bff','#25d366','#ff5f9e'];
+  function confetti(){
+    var rect=document.getElementById('formCard').getBoundingClientRect();
+    var cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
+    for(var i=0;i<140;i++){
+      var a=Math.random()*Math.PI*2, v=5+Math.random()*9;
+      parts.push({x:cx,y:cy,vx:Math.cos(a)*v,vy:Math.sin(a)*v-4,
+        s:5+Math.random()*7,c:colors[i%colors.length],r:Math.random()*Math.PI,
+        vr:(Math.random()-.5)*.3,life:70+Math.random()*50});
+    }
+    cancelAnimationFrame(raf); loop();
+  }
+  function loop(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    parts=parts.filter(function(p){return p.life>0;});
+    parts.forEach(function(p){
+      p.x+=p.vx; p.y+=p.vy; p.vy+=0.28; p.vx*=0.985; p.r+=p.vr; p.life--;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r);
+      ctx.globalAlpha=Math.min(1,p.life/40);
+      ctx.fillStyle=p.c; ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*0.6);
+      ctx.restore();
+    });
+    if(parts.length) raf=requestAnimationFrame(loop);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+})();
+</script>
+</body>
+</html>
