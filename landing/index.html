@@ -592,27 +592,34 @@ footer small{color:#8b93b5}
     var btn=form.querySelector('.submit'), sendErr=document.getElementById('sendErr');
     btn.disabled=true; btn.textContent='שולח... ⏳'; sendErr.style.display='none';
 
-    fetch('https://formsubmit.co/ajax/amit@hakerem-ins.co.il',{
+    /* the lead is sent over two independent channels:
+       1. Supabase (gefen-crm, write-only table) — permanent backup
+       2. n8n webhook — emails the lead to the agency inboxes */
+    var toDb=fetch('https://tzctirofqjitugoxvzqt.supabase.co/rest/v1/landing_leads',{
       method:'POST',
-      headers:{'Content-Type':'application/json','Accept':'application/json'},
-      body:JSON.stringify({
-        _subject:'ליד חדש מדף הנחיתה — גפן ביטוח ופיננסים',
-        _template:'table',
-        _captcha:'false',
-        'שם':name,
-        'טלפון':phone,
-        'מתי נוח שנתקשר':when
-      })
-    }).then(function(r){
-      if(!r.ok) throw new Error('send failed');
-      return r.json();
-    }).then(function(){
-      document.getElementById('successMsg').textContent='נתקשר אליך ב'+when+', '+name+'. רוצה לזרז? שלח לנו עכשיו וואטסאפ:';
-      document.getElementById('formCard').classList.add('sent');
-      confetti();
-    }).catch(function(){
-      btn.disabled=false; btn.textContent='שיחזרו אליי 🚀';
-      sendErr.style.display='block';
+      headers:{
+        'Content-Type':'application/json',
+        'apikey':'sb_publishable_g21uvmbcsrnbxDzvo_APhA_KB_-iQLG',
+        'Prefer':'return=minimal'
+      },
+      body:JSON.stringify({name:name, phone:phone, preferred_time:when})
+    }).then(function(r){ if(!r.ok) throw new Error('db'); });
+
+    var toMail=fetch('https://n8n.elads-personal-ai-assistant.org/webhook/gefen-landing-lead',{
+      method:'POST',
+      body:new URLSearchParams({name:name, phone:phone, when:when})
+    }).then(function(r){ if(!r.ok) throw new Error('mail'); });
+
+    Promise.allSettled([toDb,toMail]).then(function(rs){
+      var anyOk=rs.some(function(r){ return r.status==='fulfilled'; });
+      if(anyOk){
+        document.getElementById('successMsg').textContent='נתקשר אליך ב'+when+', '+name+'. רוצה לזרז? שלח לנו עכשיו וואטסאפ:';
+        document.getElementById('formCard').classList.add('sent');
+        confetti();
+      } else {
+        btn.disabled=false; btn.textContent='שיחזרו אליי 🚀';
+        sendErr.style.display='block';
+      }
     });
   });
 
