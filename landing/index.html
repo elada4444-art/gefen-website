@@ -260,6 +260,9 @@ h1 .hl::after{
 }
 @keyframes shine{0%{inset-inline-start:-60%}60%,100%{inset-inline-start:130%}}
 .privacy{margin-top:12px;text-align:center;font-size:.8rem;color:#8b93b5}
+.send-err{display:none;margin-top:12px;text-align:center;font-size:.92rem;font-weight:600;color:#d43c3c;background:#fdeaea;border-radius:12px;padding:10px 12px}
+.send-err a{color:#b02a2a;text-decoration:underline}
+.submit:disabled{opacity:.7;cursor:wait;transform:none}
 
 /* success state */
 .success{
@@ -441,6 +444,7 @@ footer small{color:#8b93b5}
           </div>
 
           <button type="submit" class="submit">שיחזרו אליי 🚀</button>
+          <div class="send-err" id="sendErr">משהו השתבש בשליחה 😕 נסו שוב עוד רגע, או פשוט <a href="https://wa.me/97235727277?text=%D7%A9%D7%9C%D7%95%D7%9D%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A7%D7%91%D7%9C%20%D7%9C%D7%99%D7%95%D7%95%D7%99%20%D7%A4%D7%99%D7%A0%D7%A0%D7%A1%D7%99" target="_blank" rel="noopener"><b>שלחו לנו וואטסאפ</b></a></div>
           <div class="privacy">🔒 הפרטים שלך שמורים אצלנו בלבד ולא יועברו לאף גורם אחר</div>
         </form>
 
@@ -500,7 +504,7 @@ footer small{color:#8b93b5}
   <div class="links">
     <a href="tel:+97235727277">📞 03-5727277</a>
     <a href="https://wa.me/97235727277" target="_blank" rel="noopener">💬 וואטסאפ</a>
-    <a href="/">🌐 לאתר המלא</a>
+    <a href="https://gefen-website-weld.vercel.app/">🌐 לאתר המלא</a>
   </div>
   <small>© <span id="yr"></span> גפן סוכנויות לביטוח ופיננסים בע״מ</small>
 </footer>
@@ -584,10 +588,32 @@ footer small{color:#8b93b5}
             'טלפון: '+encodeURIComponent(phone)+'%0A'+
             'נוח לי שתתקשרו: '+encodeURIComponent(when);
     document.getElementById('waLead').href='https://wa.me/97235727277?text='+msg;
-    document.getElementById('successMsg').textContent='נתקשר אליך ב'+when+', '+name+'. רוצה לזרז? שלח לנו עכשיו וואטסאפ:';
 
-    document.getElementById('formCard').classList.add('sent');
-    confetti();
+    var btn=form.querySelector('.submit'), sendErr=document.getElementById('sendErr');
+    btn.disabled=true; btn.textContent='שולח... ⏳'; sendErr.style.display='none';
+
+    fetch('https://formsubmit.co/ajax/amit@hakerem-ins.co.il',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({
+        _subject:'ליד חדש מדף הנחיתה — גפן ביטוח ופיננסים',
+        _template:'table',
+        _captcha:'false',
+        'שם':name,
+        'טלפון':phone,
+        'מתי נוח שנתקשר':when
+      })
+    }).then(function(r){
+      if(!r.ok) throw new Error('send failed');
+      return r.json();
+    }).then(function(){
+      document.getElementById('successMsg').textContent='נתקשר אליך ב'+when+', '+name+'. רוצה לזרז? שלח לנו עכשיו וואטסאפ:';
+      document.getElementById('formCard').classList.add('sent');
+      confetti();
+    }).catch(function(){
+      btn.disabled=false; btn.textContent='שיחזרו אליי 🚀';
+      sendErr.style.display='block';
+    });
   });
 
   /* ---- confetti ---- */
