@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<style>__FONT_CSS__</style>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:1080px; height:1920px; overflow:hidden; background:#ffffff; }
+  body {
+    font-family:'Heebo', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:geometricPrecision;
+  }
+  #stage {
+    position:relative; width:1080px; height:1920px; background:#fff;
+    display:flex; flex-direction:column; align-items:center;
+  }
+
+  /* ---------- logo ---------- */
+  #logoWrap { position:absolute; top:250px; left:0; right:0; display:flex; flex-direction:column; align-items:center; }
+  #logo { width:660px; display:block; }
+  #rule { margin-top:44px; height:8px; width:0px; border-radius:8px;
+          background:linear-gradient(90deg,#fd6802,#ffa14e); }
+
+  /* ---------- headline ---------- */
+  #headline { position:absolute; top:640px; left:0; right:0; text-align:center;
+              color:#0a5aa1; font-weight:900; letter-spacing:-1px; }
+  .line { display:block; white-space:nowrap; }
+  #l1 { font-size:112px; line-height:1.16; }
+  #l2 { font-size:112px; line-height:1.16; }
+  .w { display:inline-block; will-change:transform,opacity,filter; }
+  .w + .w { margin-right:22px; }
+
+  /* ---------- "בעוד" ---------- */
+  #beod { position:absolute; top:930px; left:0; right:0; text-align:center;
+          font-size:64px; font-weight:700; color:#5b7594; letter-spacing:2px; }
+
+  /* ---------- counter ---------- */
+  #counter { position:absolute; top:1105px; left:0; right:0; display:flex;
+             flex-direction:column; align-items:center; }
+  #ringBox { position:relative; width:460px; height:460px; }
+  #ringSvg { position:absolute; inset:0; transform:rotate(-90deg); }
+  #digitBox { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+  .digit { position:absolute; font-size:270px; font-weight:900; color:#0a5aa1;
+           line-height:1; font-variant-numeric:proportional-nums; will-change:transform,opacity; }
+  #dots { margin-top:48px; display:flex; gap:30px; direction:rtl; }
+  .dot { width:26px; height:26px; border-radius:50%; background:#fd6802; will-change:transform,opacity; }
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <div id="logoWrap">
+    <img id="logo" src="__LOGO__" alt="גפן ביטוח ופיננסים">
+    <div id="rule"></div>
+  </div>
+
+  <div id="headline">
+    <span class="line" id="l1"></span>
+    <span class="line" id="l2"></span>
+  </div>
+
+  <div id="beod">בעוד</div>
+
+  <div id="counter">
+    <div id="ringBox">
+      <svg id="ringSvg" viewBox="0 0 460 460">
+        <circle id="track" cx="230" cy="230" r="205" fill="none" stroke="#eceef2" stroke-width="16"/>
+        <circle id="prog"  cx="230" cy="230" r="205" fill="none" stroke="#fd6802" stroke-width="16"
+                stroke-linecap="round"/>
+      </svg>
+      <div id="digitBox"></div>
+    </div>
+    <div id="dots">
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   Deterministic timeline. Nothing depends on wall-clock time;
+   render(t) fully describes the frame at time t (seconds).
+   ============================================================ */
+
+const DUR = 6.40;               // total seconds
+const CIRC = 2 * Math.PI * 205; // ring circumference
+
+/* ---- easing ---- */
+const clamp01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
+const outCubic = p => 1 - Math.pow(1 - p, 3);
+const outQuint = p => 1 - Math.pow(1 - p, 5);
+const inCubic  = p => p * p * p;
+const outBack  = p => { const c1 = 1.9, c3 = c1 + 1;
+                        return 1 + c3 * Math.pow(p - 1, 3) + c1 * Math.pow(p - 1, 2); };
+/* progress of a segment [t0,t1] at time t */
+const seg = (t, t0, t1) => clamp01((t - t0) / (t1 - t0));
+const lerp = (a, b, p) => a + (b - a) * p;
+
+/* ---- build words ---- */
+const LINE1 = ['מידע', 'חשוב'];
+const LINE2 = ['בנוגע', 'לכסף', 'שלכם'];
+const wordEls = [];
+function buildLine(el, words) {
+  for (const w of words) {
+    const s = document.createElement('span');
+    s.className = 'w';
+    s.textContent = w;
+    el.appendChild(s);
+    wordEls.push(s);
+  }
+}
+buildLine(document.getElementById('l1'), LINE1);
+buildLine(document.getElementById('l2'), LINE2);
+
+/* ---- build digits ---- */
+const DIGITS = ['3', '2', '1'];
+const digitEls = DIGITS.map(d => {
+  const el = document.createElement('div');
+  el.className = 'digit';
+  el.textContent = d;
+  document.getElementById('digitBox').appendChild(el);
+  return el;
+});
+
+/* ---- optical centering of the digits ----
+   Centering the element only centers the glyph's *advance box*; the ink inside
+   it can sit off to one side (Heebo's "1" does). Measure the ink box once the
+   font is ready and carry a per-digit x correction. */
+let digitDX = DIGITS.map(() => 0);
+function calibrate() {
+  const c = document.createElement('canvas').getContext('2d');
+  c.font = '900 270px Heebo';
+  digitDX = DIGITS.map(d => {
+    const m = c.measureText(d);
+    const inkCenter = (m.actualBoundingBoxRight - m.actualBoundingBoxLeft) / 2;
+    return m.width / 2 - inkCenter;
+  });
+  return digitDX;
+}
+window.calibrate = calibrate;
+
+const logoWrap = document.getElementById('logoWrap');
+const logo     = document.getElementById('logo');
+const rule     = document.getElementById('rule');
+const beod     = document.getElementById('beod');
+const counter  = document.getElementById('counter');
+const ringBox  = document.getElementById('ringBox');
+const prog     = document.getElementById('prog');
+const track    = document.getElementById('track');
+const dotEls   = [...document.querySelectorAll('.dot')];
+
+/* ---- timing constants ---- */
+const T_LOGO   = [0.12, 1.05];
+const T_RULE   = [0.70, 1.15];
+const T_WORD0  = 1.12;   // first word start
+const T_WSTAG  = 0.115;  // stagger between words
+const T_WDUR   = 0.46;   // per-word duration
+const T_BEOD   = [2.16, 2.62];
+const T_RING   = [2.44, 2.86];
+const T_COUNT0 = 2.90;   // countdown starts
+const T_STEP   = 1.00;   // one second per digit
+const T_END    = T_COUNT0 + 3 * T_STEP;  // countdown lands (5.90s)
+
+function render(t) {
+
+  /* ---------- logo ---------- */
+  {
+    const p  = outCubic(seg(t, T_LOGO[0], T_LOGO[1]));
+    const op = clamp01(seg(t, T_LOGO[0], T_LOGO[0] + 0.42));
+    logo.style.opacity   = op.toFixed(4);
+    logo.style.transform = `translateY(${lerp(46, 0, p).toFixed(2)}px) scale(${lerp(0.93, 1, p).toFixed(4)})`;
+    logo.style.filter    = `blur(${lerp(9, 0, clamp01(p * 1.35)).toFixed(2)}px)`;
+  }
+  {
+    const p = outQuint(seg(t, T_RULE[0], T_RULE[1]));
+    rule.style.width = (300 * p).toFixed(2) + 'px';
+  }
+
+  /* ---------- headline words ---------- */
+  wordEls.forEach((el, i) => {
+    const t0 = T_WORD0 + i * T_WSTAG;
+    const raw = seg(t, t0, t0 + T_WDUR);
+    const p   = outCubic(raw);
+    const op  = clamp01(seg(t, t0, t0 + T_WDUR * 0.62));
+    el.style.opacity   = op.toFixed(4);
+    el.style.transform = `translateY(${lerp(34, 0, p).toFixed(2)}px) scale(${lerp(0.965, 1, p).toFixed(4)})`;
+    el.style.filter    = `blur(${lerp(8, 0, clamp01(raw * 1.5)).toFixed(2)}px)`;
+  });
+
+  /* ---------- "בעוד" ---------- */
+  {
+    const raw = seg(t, T_BEOD[0], T_BEOD[1]);
+    const p   = outCubic(raw);
+    beod.style.opacity   = clamp01(raw * 1.8).toFixed(4);
+    beod.style.transform = `translateY(${lerp(26, 0, p).toFixed(2)}px)`;
+    beod.style.filter    = `blur(${lerp(7, 0, clamp01(raw * 1.6)).toFixed(2)}px)`;
+    beod.style.letterSpacing = lerp(16, 2, p).toFixed(2) + 'px';
+  }
+
+  /* ---------- ring reveal ---------- */
+  {
+    const raw = seg(t, T_RING[0], T_RING[1]);
+    const p   = outBack(raw);
+    counter.style.opacity   = clamp01(raw * 2.1).toFixed(4);
+    const land = 1 + 0.055 * Math.sin(Math.PI * clamp01(seg(t, T_END, T_END + 0.34)));
+    ringBox.style.transform = `scale(${(lerp(0.72, 1, p) * land).toFixed(4)})`;
+    track.style.opacity     = clamp01(raw).toFixed(4);
+  }
+
+  /* ---------- countdown ---------- */
+  const local = t - T_COUNT0;            // seconds since countdown start
+  const idx   = Math.floor(local / T_STEP);   // which digit (0,1,2)
+  const frac  = clamp01(local / T_STEP - idx); // progress inside current second
+
+  /* ring: sweeps a full turn per second, emptying 1 -> 0 */
+  if (local < 0) {
+    prog.style.strokeDashoffset = CIRC;
+    prog.style.strokeDasharray  = CIRC;
+    prog.style.opacity = 0;
+  } else {
+    const done   = idx >= DIGITS.length;
+    // during the count the ring drains 1 -> 0 once per second; once the last
+    // second lands it snaps back to a full circle as the "time's up" state
+    const remain = done
+      ? outCubic(seg(t, T_END, T_END + 0.22))
+      : 1 - frac;
+    prog.style.strokeDasharray  = CIRC;
+    prog.style.strokeDashoffset = (CIRC * (1 - remain)).toFixed(2);
+    prog.style.opacity = 1;
+  }
+
+  /* digits: scale-in on entry, scale-out on exit */
+  digitEls.forEach((el, i) => {
+    const t0 = T_COUNT0 + i * T_STEP;      // this digit becomes active
+    const t1 = t0 + T_STEP;                // next digit takes over
+    const isLast = i === DIGITS.length - 1;
+
+      const dx = digitDX[i].toFixed(2) + 'px', dy = '13px';
+
+    if (t < t0 - 0.001) {
+      el.style.opacity = 0;
+      el.style.transform = `translate(${dx}, ${dy}) scale(1.7)`;
+      return;
+    }
+
+    const inP  = outBack(seg(t, t0, t0 + 0.30));
+    let op     = clamp01(seg(t, t0, t0 + 0.12));
+    let sc     = lerp(1.75, 1, inP);
+
+    /* Hand-off to the next digit. The outgoing digit fades out *past* t1 so it
+       overlaps the incoming one — otherwise both sit at zero opacity on the
+       swap frame and the ring blinks empty for a frame. */
+    if (!isLast && t > t1 - 0.13) {
+      const outP = inCubic(seg(t, t1 - 0.13, t1 + 0.05));
+      op = 1 - outP;
+      sc = lerp(1, 0.62, outP);
+    }
+    /* gentle settle pulse right after entry */
+    const pulse = 1 + 0.05 * Math.sin(Math.PI * clamp01(seg(t, t0 + 0.24, t0 + 0.52)));
+    el.style.opacity   = op.toFixed(4);
+    el.style.transform = `translate(${dx}, ${dy}) scale(${(sc * pulse).toFixed(4)})`;
+  });
+
+  /* dots: three dots pop in over each second, reset on digit change */
+  dotEls.forEach((el, i) => {
+    if (local < 0) { el.style.opacity = 0; el.style.transform = 'scale(0.2)'; return; }
+    const capIdx = Math.min(idx, DIGITS.length - 1);
+    const base   = T_COUNT0 + capIdx * T_STEP;
+    const t0     = base + 0.34 + i * 0.17;
+    const raw    = seg(t, t0, t0 + 0.24);
+    const p      = outBack(raw);
+    /* dots clear out just before the digit swaps */
+    const last   = capIdx === DIGITS.length - 1;
+    const clear  = last ? 0 : inCubic(seg(t, base + T_STEP - 0.14, base + T_STEP));
+    el.style.opacity   = (clamp01(raw * 2) * (1 - clear)).toFixed(4);
+    el.style.transform = `scale(${lerp(0.2, 1, p).toFixed(4)})`;
+  });
+}
+
+window.render = render;
+window.SCENE_DURATION = DUR;
+render(0);
+</script>
+</body>
+</html>
