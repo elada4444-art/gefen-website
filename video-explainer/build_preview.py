@@ -104,7 +104,7 @@ ol{{margin:0;padding-inline-start:22px;line-height:1.6;font-size:15px;max-width:
   aud.addEventListener('pause',()=>{{ ctl.classList.remove('playing'); ctl.setAttribute('aria-label','נגן'); cancelAnimationFrame(raf); }});
   aud.addEventListener('ended',()=>{{ ctl.classList.remove('playing'); }});
   seek.addEventListener('input',()=>{{ aud.currentTime=parseFloat(seek.value); render(aud.currentTime); tcur.textContent=fmt(aud.currentTime); }});
-  render(3.0);
+  render(4.5);
 }})();
 </script>
 """
