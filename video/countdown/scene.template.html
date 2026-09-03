@@ -26,13 +26,13 @@
   #headline { position:absolute; top:640px; left:0; right:0; text-align:center;
               color:#0a5aa1; font-weight:900; letter-spacing:-1px; }
   .line { display:block; white-space:nowrap; }
-  #l1 { font-size:112px; line-height:1.16; }
-  #l2 { font-size:112px; line-height:1.16; }
+  #l1 { font-size:106px; line-height:1.16; }
+  #l2 { font-size:106px; line-height:1.16; }
   .w { display:inline-block; will-change:transform,opacity,filter; }
   .w + .w { margin-right:22px; }
 
   /* ---------- "בעוד" ---------- */
-  #beod { position:absolute; top:930px; left:0; right:0; text-align:center;
+  #beod { position:absolute; top:920px; left:0; right:0; text-align:center;
           font-size:64px; font-weight:700; color:#5b7594; letter-spacing:2px; }
 
   /* ---------- counter ---------- */
@@ -99,8 +99,8 @@ const seg = (t, t0, t1) => clamp01((t - t0) / (t1 - t0));
 const lerp = (a, b, p) => a + (b - a) * p;
 
 /* ---- build words ---- */
-const LINE1 = ['מידע', 'חשוב'];
-const LINE2 = ['בנוגע', 'לכסף', 'שלכם'];
+const LINE1 = ['מידע', 'שיכול', 'להיות'];
+const LINE2 = ['שווה', 'לכם', 'כסף'];
 const wordEls = [];
 function buildLine(el, words) {
   for (const w of words) {
@@ -155,7 +155,7 @@ const dotEls   = [...document.querySelectorAll('.dot')];
 const T_LOGO   = [0.12, 1.05];
 const T_RULE   = [0.70, 1.15];
 const T_WORD0  = 1.12;   // first word start
-const T_WSTAG  = 0.115;  // stagger between words
+const T_WSTAG  = 0.100;  // stagger between words
 const T_WDUR   = 0.46;   // per-word duration
 const T_BEOD   = [2.16, 2.62];
 const T_RING   = [2.44, 2.86];

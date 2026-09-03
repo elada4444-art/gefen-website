@@ -1,8 +1,8 @@
-# "מידע חשוב בנוגע לכסף שלכם בעוד 3…2…1…" — countdown opener
+# "מידע שיכול להיות שווה לכם כסף בעוד 3…2…1…" — countdown opener
 
 A 6.4s, 1080×1920 (9:16) opener on a white background: the Gefen logo, the
-headline revealed word by word, and a 3…2…1 counter. No narration, no music —
-the MP4 carries no audio stream at all.
+headline "מידע שיכול להיות שווה לכם כסף" revealed word by word, and a
+3…2…1 counter. No narration, no music — the MP4 carries no audio stream.
 
 The scene is plain HTML/CSS driven by a single deterministic `render(t)`
 function — nothing reads the wall clock, so frame *n* is always identical.
